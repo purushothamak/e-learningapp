@@ -30,7 +30,7 @@ export class CoreCoursesMyCoursesPage {
     userCategoryName = '';
 
     constructor(private navCtrl: NavController,navParams: NavParams) {
-        this.userCategoryName = navParams.get('cateName') || "E-Learning";
+        this.userCategoryName = localStorage.getItem('catName')
      }
 
     /**

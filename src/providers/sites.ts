@@ -302,8 +302,8 @@ export class CoreSitesProvider {
                         notNull: true,
                         unique: true
                     },
-                ],
-            },
+                ]
+            }
         ],
         async migrate(db: SQLiteDB, oldVersion: number): Promise<any> {
             if (oldVersion < 2) {
@@ -1494,7 +1494,15 @@ export class CoreSitesProvider {
             siteId: siteId
         };
 
+        const entry1 = {
+            userid: 1,
+            siteid: siteId,
+            catid: 1,
+            name: "shunmugaaj"
+        };
+
         await this.appDB.insertRecord(CoreSitesProvider.CURRENT_SITE_TABLE, entry);
+       // await this.appDB.insertRecord(CoreSitesProvider.USER_CATEGORY_TABLE, entry1);
 
         this.eventsProvider.trigger(CoreEventsProvider.LOGIN, {}, siteId);
     }
@@ -1531,11 +1539,10 @@ export class CoreSitesProvider {
 
         // Site deleted from sites list, now delete the folder.
         await site.deleteFolder();
-
+        this.eventsProvider.trigger(CoreEventsProvider.LOGOUT, {}, siteId);
         this.eventsProvider.trigger(CoreEventsProvider.SITE_DELETED, site, siteId);
         promises.push(this.appDB.deleteRecords(CoreSitesProvider.CURRENT_SITE_TABLE, { id: 1 }));
-        this.eventsProvider.trigger(CoreEventsProvider.LOGOUT, {}, siteId);
-
+    
     }
 
     /**

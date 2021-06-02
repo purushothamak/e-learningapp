@@ -16,6 +16,7 @@ import { Component, OnDestroy, ViewChild, ViewChildren, QueryList } from '@angul
 import { IonicPage, NavController } from 'ionic-angular';
 import { CoreEventsProvider } from '@providers/events';
 import { CoreSitesProvider } from '@providers/sites';
+import { CoreAppProvider, CoreAppSchema} from '@providers/app'
 import { CoreDomUtilsProvider } from '@providers/utils/dom';
 import { CoreTabsComponent } from '@components/tabs/tabs';
 import { CoreBlockDelegate } from '@core/block/providers/delegate';
@@ -28,6 +29,9 @@ import { CoreCoursesMyCoursesComponent } from '../../components/my-courses/my-co
 import { HttpClient } from '@angular/common/http';
 import { CoreWSProvider } from '@providers/ws';
 import { TranslateService } from '@ngx-translate/core';
+import { SQLiteObject } from '@ionic-native/sqlite';
+import { Platform } from 'ionic-angular';
+import { SQLiteDB} from '@classes/sqlitedb';
 
 /**
  * Page that displays the dashboard.
@@ -43,6 +47,39 @@ export class CoreCoursesDashboardPage implements OnDestroy {
     @ViewChildren(CoreBlockComponent) blocksComponents: QueryList<CoreBlockComponent>;
     @ViewChild(CoreCoursesMyCoursesComponent) mcComponent: CoreCoursesMyCoursesComponent;
 
+    db: SQLiteObject;
+    promise: Promise<void>;
+    protected appDB: SQLiteDB;
+    protected dbReady: Promise<any>; // Promise resolved when the app DB is initialized.
+    static USER_CATEGORY_TABLE = 'user_category';
+    protected appTablesSchemaNew: CoreAppSchema = {
+        name: 'CoreCoursesDashboardPage',
+        version: 2,
+        tables: [
+            {
+                name: CoreCoursesDashboardPage.USER_CATEGORY_TABLE,
+                columns: [ 
+                    {
+                        name: 'catid',
+                        type: 'INTEGER',
+                        primaryKey: true
+                    },
+                    {
+                        name: 'name',
+                        type: 'TEXT',
+                    },
+                    {
+                        name: 'studentid',
+                        type: 'INTEGER',
+                    },
+                    {
+                        name: 'siteid',
+                        type: 'TEXT',
+                    }
+                ]
+            }
+        ]
+    };
     firstSelectedTab: number;
     siteHomeEnabled = false;
     tabsReady = false;
@@ -58,27 +95,40 @@ export class CoreCoursesDashboardPage implements OnDestroy {
     downloadCourseEnabled: boolean;
     downloadCoursesEnabled: boolean;
     userCategory: any[];
+    categoryArray = [];
+    catImageUrl = '';
+    dashboardIcon = '';
+    title = '';
     protected categoryIds = '';
-
     protected isDestroyed;
     protected updateSiteObserver;
 
-    constructor(public httpClient: HttpClient,private navCtrl: NavController, private coursesProvider: CoreCoursesProvider,
-            private sitesProvider: CoreSitesProvider, private siteHomeProvider: CoreSiteHomeProvider,
+    constructor(private platform: Platform,public httpClient: HttpClient,private navCtrl: NavController, private coursesProvider: CoreCoursesProvider,
+            private sitesProvider: CoreSitesProvider, private siteHomeProvider: CoreSiteHomeProvider,private appProvider: CoreAppProvider,
             private eventsProvider: CoreEventsProvider, private dashboardProvider: CoreCoursesDashboardProvider,
             private domUtils: CoreDomUtilsProvider, private blockDelegate: CoreBlockDelegate,protected wsProvider: CoreWSProvider,protected translate: TranslateService) {
+        this.catImageUrl = '../../../../assets/img/dashboard.png';
+        this.dashboardIcon = '../../../../assets/img/bookIcon.png';
         this.loadSiteName();
+        this.appDB = appProvider.getDB();
+        this.dbReady = appProvider.createTablesFromSchema(this.appTablesSchemaNew).catch(() => {
+            // Ignore errors.
+        });
     }
 
 
     ngOnInit(): void {
-        this.fetchUserCategory()
+        if (!this.appProvider.isOnline()) {
+            this.syncAllCategory();
+           // this.getuserCategoryfromDB();
+        } else {
+            this.fetchUserCategory();
+        }
     }
     
     fetchUserCategory() {
         let siteInfo = this.sitesProvider.getCurrentSite()
         this.userId = this.sitesProvider.getCurrentSiteUserId();
-
         const params = {
             wstoken: siteInfo.token,
             wsfunction:"local_sms_get_subcategory",
@@ -93,7 +143,9 @@ export class CoreCoursesDashboardPage implements OnDestroy {
                 return Promise.reject(this.translate.instant('core.cannotconnecttrouble'));
             } else {
                 this.userCategory = data.category;
-                console.log("Shunmugaraj-Cat-post",data.category)
+                this.categoryArray = data.category
+                this.insertCategoryListToDB(this.categoryArray);
+              //  this.insertCategoryToDB(this.categoryArray);
                 return data;
             }
         }, () => {
@@ -103,10 +155,11 @@ export class CoreCoursesDashboardPage implements OnDestroy {
     }
 
     openCourse(userCategoryId,categoryName): void {
-       
+        localStorage.setItem('catName',categoryName);
         this.navCtrl.push('CoreCoursesMyCoursesPage', {cateId:userCategoryId,catName:categoryName});
     }
     
+  
     /**
      * View loaded.
      */
@@ -292,6 +345,35 @@ export class CoreCoursesDashboardPage implements OnDestroy {
                 visible: true
             }
         ];
+    }
+
+
+    async insertCategoryListToDB(categoryArray): Promise<void> {
+        await this.dbReady;
+        let siteInfo = this.sitesProvider.getCurrentSite()
+        let userId = this.sitesProvider.getCurrentSiteUserId();
+        let siteId = siteInfo.id;
+        for(let key = 0; key < categoryArray.length; key++){
+            const entrycategory = {
+                catid: categoryArray[key].catid,
+                name: categoryArray[key].name,
+                studentid: userId,
+                siteid: siteId
+            };
+            await this.appDB.insertRecordCategory(CoreCoursesDashboardPage.USER_CATEGORY_TABLE, (entrycategory));
+        }
+    }
+
+    protected syncAllCategory(): Promise<any> {
+        let userId = this.sitesProvider.getCurrentSiteUserId();
+        return this.getAllCategory(userId).then((category) => {
+            this.userCategory = category;
+        });
+    }   
+
+    getAllCategory(userId?:number): Promise<any[]> {
+        let selectQuery = 'studentid = ' + userId 
+        return this.appDB.getAllCateoryDB(CoreCoursesDashboardPage.USER_CATEGORY_TABLE,selectQuery);
     }
 
     /**

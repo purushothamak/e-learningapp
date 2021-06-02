@@ -17,6 +17,7 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { Searchbar } from 'ionic-angular';
 import { CoreEventsProvider } from '@providers/events';
 import { CoreSitesProvider } from '@providers/sites';
+import { CoreAppProvider, CoreAppSchema} from '@providers/app'
 import { CoreDomUtilsProvider } from '@providers/utils/dom';
 import { CoreCoursesProvider, CoreCoursesMyCoursesUpdatedEventData } from '../../providers/courses';
 import { CoreCoursesHelperProvider } from '../../providers/helper';
@@ -25,15 +26,192 @@ import { CoreCourseOptionsDelegate } from '@core/course/providers/options-delega
 import { HttpClient } from '@angular/common/http';
 import { CoreWSProvider } from '@providers/ws';
 import { TranslateService } from '@ngx-translate/core';
+import { SQLiteObject } from '@ionic-native/sqlite';
+import { Platform } from 'ionic-angular';
+import { SQLiteDB} from '@classes/sqlitedb';
 /**
  * Component that displays the list of courses the user is enrolled in.
  */
+
 @Component({
     selector: 'core-courses-my-courses',
     templateUrl: 'my-courses.html',
 })
 export class CoreCoursesMyCoursesComponent implements OnInit, OnDestroy {
     @ViewChild('searchbar') searchbar: Searchbar;
+
+    db: SQLiteObject;
+    protected appDB: SQLiteDB;
+    protected dbReady: Promise<any>; // Promise resolved when the app DB is initialized.
+    static USER_CATEGORY_COURSES_TABLE = 'user_category_courses'
+    protected appTablesSchemaCourses: CoreAppSchema = {
+        name: 'CoreCoursesMyCoursesComponent',
+        version: 2,
+        tables: [
+            {
+                name: CoreCoursesMyCoursesComponent.USER_CATEGORY_COURSES_TABLE,
+                columns: [
+                    {
+                        name: 'admOptions',
+                        type: 'TEXT'
+                    },
+                    {
+                        name: 'cacherev',
+                        type: 'TEXT'
+                    },
+                    {
+                        name: 'calendartype',
+                        type: 'TEXT'
+                    },
+                    {
+                        name: 'category',
+                        type: 'TEXT'
+                    },
+                    {
+                        name: 'completionnotify',
+                        type: 'TEXT'
+                    },
+                    {
+                        name: 'courseImage',
+                        type: 'TEXT'
+                    },
+                    {
+                        name: 'defaultgroupingid',
+                        type: 'TEXT'
+                    },
+                    {
+                        name: 'enablecompletion',
+                        type: 'TEXT'
+                    },
+                    {
+                        name: 'enddate',
+                        type: 'TEXT'
+                    },
+                    {
+                        name: 'format',
+                        type: 'TEXT'
+                    },
+                    {
+                        name: 'fullname',
+                        type: 'TEXT'
+                    },
+                    {
+                        name: 'groupmode',
+                        type: 'TEXT'
+                    },
+                    {
+                        name: 'groupmodeforce',
+                        type: 'TEXT'
+                    },
+                    {
+                        name: 'id',
+                        type: 'INTEGER',
+                        primaryKey: true
+                    },
+                    {
+                        name: 'idnumber',
+                        type: 'TEXT'
+                    },
+                    {
+                        name: 'lang',
+                        type: 'TEXT'
+                    },
+                    {
+                        name: 'legacyfiles',
+                        type: 'TEXT'
+                    },
+                    {
+                        name: 'marker',
+                        type: 'TEXT'
+                    },
+                    {
+                        name: 'maxbytes',
+                        type: 'TEXT'
+                    },
+                    {
+                        name: 'navOptions',
+                        type: 'TEXT'
+                    },
+                    {
+                        name: 'newsitems',
+                        type: 'TEXT'
+                    },
+                    {
+                        name: 'relativedatesmode',
+                        type: 'TEXT'
+                    },
+                    {
+                        name: 'requested',
+                        type: 'TEXT'
+                    },
+                    {
+                        name: 'role',
+                        type: 'TEXT'
+                    },
+                    {
+                        name: 'rolename',
+                        type: 'INTEGER'
+                    },
+                    {
+                        name: 'shortname',
+                        type: 'TEXT'
+                    },
+                    {
+                        name: 'showgrades',
+                        type: 'TEXT'
+                    },
+                    {
+                        name: 'showreports',
+                        type: 'TEXT'
+                    },
+                    {
+                        name: 'sortorder',
+                        type: 'TEXT'
+                    },
+                    {
+                        name: 'startdate',
+                        type: 'TEXT'
+                    },
+                    {
+                        name: 'summary',
+                        type: 'TEXT'
+                    },
+                    {
+                        name: 'summaryformat',
+                        type: 'TEXT'
+                    },
+                    {
+                        name: 'theme',
+                        type: 'TEXT'
+                    },
+                    {
+                        name: 'timecreated',
+                        type: 'TEXT'
+                    },
+                    {
+                        name: 'timemodified',
+                        type: 'TEXT'
+                    },
+                    {
+                        name: 'visible',
+                        type: 'TEXT'
+                    },
+                    {
+                        name: 'visibleold',
+                        type: 'TEXT'
+                    },
+                    {
+                        name: 'studentid',
+                        type: 'TEXT'
+                    },
+                    {
+                        name: 'siteid',
+                        type: 'TEXT'
+                    },
+                ]
+            }
+        ]
+    };
 
     courses: any[];
     userCategoryCourses:any[];
@@ -51,14 +229,17 @@ export class CoreCoursesMyCoursesComponent implements OnInit, OnDestroy {
     protected courseIds = '';
     userId: number;
     userCategoryId = 0;
-    
 
-    constructor(private navCtrl: NavController, navParams: NavParams,private coursesProvider: CoreCoursesProvider,
-            private domUtils: CoreDomUtilsProvider, private eventsProvider: CoreEventsProvider,
+    constructor(private platform: Platform,private navCtrl: NavController, navParams: NavParams,private coursesProvider: CoreCoursesProvider,
+            private domUtils: CoreDomUtilsProvider, private eventsProvider: CoreEventsProvider,private appProvider: CoreAppProvider,
             private sitesProvider: CoreSitesProvider, private courseHelper: CoreCourseHelperProvider,
             private courseOptionsDelegate: CoreCourseOptionsDelegate, private coursesHelper: CoreCoursesHelperProvider,
             public httpClient: HttpClient,protected wsProvider: CoreWSProvider,protected translate: TranslateService) { 
                 this.userCategoryId = navParams.get('cateId') || 0;
+                this.appDB = appProvider.getDB();
+                this.dbReady = appProvider.createTablesFromSchema(this.appTablesSchemaCourses).catch(() => {
+                    // Ignore errors.
+                });
             }
 
     /**
@@ -68,10 +249,14 @@ export class CoreCoursesMyCoursesComponent implements OnInit, OnDestroy {
         this.searchEnabled = !this.coursesProvider.isSearchCoursesDisabledInSite();
         this.downloadAllCoursesEnabled = !this.coursesProvider.isDownloadCoursesDisabledInSite();
 
-        this.fetchUserCategoryCourses().finally(() => {
+        if (!this.appProvider.isOnline()) {
             this.coursesLoaded = true;
-        });
-
+            this.syncAllcourses();
+        } else {
+            this.fetchUserCategoryCourses().finally(() => {
+                this.coursesLoaded = true;
+            });
+        }       
         // Update list if user enrols in a course.
         this.myCoursesObserver = this.eventsProvider.on(CoreCoursesProvider.EVENT_MY_COURSES_UPDATED,
                 (data: CoreCoursesMyCoursesUpdatedEventData) => {
@@ -163,6 +348,7 @@ export class CoreCoursesMyCoursesComponent implements OnInit, OnDestroy {
                 }
                 this.courses = courses;
                 this.filteredCourses = this.courses;
+                this.insertCoursesListToDB(this.courses);
                 this.filter = '';
                 this.initPrefetchCoursesIcon();
                 return courses;
@@ -287,6 +473,98 @@ export class CoreCoursesMyCoursesComponent implements OnInit, OnDestroy {
         });
     }
 
+
+    async insertCoursesListToDB(courseArray): Promise<void> {
+        await this.dbReady;
+        let siteInfo = this.sitesProvider.getCurrentSite()
+        let userId = this.sitesProvider.getCurrentSiteUserId();
+        let siteId = siteInfo.id;
+        for(let key = 0; key < courseArray.length; key++){
+            const entrycourses = {
+                    admOptions: courseArray[key].admOptions,
+                    cacherev: courseArray[key].cacherev,
+                    calendartype: courseArray[key].calendartype,
+                    category: courseArray[key].category,
+                    completionnotify: courseArray[key].completionnotify,
+                    courseImage: courseArray[key].courseImage,
+                    defaultgroupingid: courseArray[key].defaultgroupingid,
+                    enablecompletion: courseArray[key].enablecompletion,
+                    enddate: courseArray[key].enddate,
+                    format: courseArray[key].format,
+                    fullname: courseArray[key].fullname,
+                    groupmode: courseArray[key].groupmode,
+                    groupmodeforce: courseArray[key].groupmodeforce,
+                    id: courseArray[key].id,
+                    idnumber: courseArray[key].idnumber,
+                    lang: courseArray[key].lang,
+                    legacyfiles: courseArray[key].legacyfiles,
+                    marker: courseArray[key].marker,
+                    maxbytes: courseArray[key].maxbytes,
+                    navOptionsnewsitems: courseArray[key].navOptionsnewsitems,
+                    relativedatesmode: courseArray[key].relativedatesmode,
+                    requested: courseArray[key].requested,
+                    role: courseArray[key].role,
+                    rolename: courseArray[key].rolename,
+                    shortname: courseArray[key].shortname,
+                    showgrades: courseArray[key].showgrades,
+                    showreports: courseArray[key].showreports,
+                    sortorder: courseArray[key].sortorder,
+                    startdate: courseArray[key].startdate,
+                    summary: courseArray[key].summary,
+                    summaryformat: courseArray[key].summaryformat,
+                    theme: courseArray[key].theme,
+                    timecreated: courseArray[key].timecreated,
+                    timemodified: courseArray[key].timemodified,
+                    visible: courseArray[key].visible,
+                    visibleold: courseArray[key].visibleold,
+                    studentid: userId,
+                    siteid: siteId
+            };
+            await this.appDB.insertRecordCategory(CoreCoursesMyCoursesComponent.USER_CATEGORY_COURSES_TABLE, (entrycourses));
+        }
+    }
+
+    protected syncAllcourses(): Promise<any> {
+        let userId = this.sitesProvider.getCurrentSiteUserId();
+        return this.getAllcurses(userId,this.userCategoryId).then((courses) => {
+            console.log("Shunmugaraj-result",courses)
+            this.courses = courses;
+            this.filteredCourses = this.courses;
+            this.filter = '';
+            this.initPrefetchCoursesIcon();
+        });
+    }   
+
+    getAllcurses(userId?:number,catid?:number): Promise<any[]> {
+        catid.toString()
+        let selectQuery = 'category = ' + catid.toString();
+        return this.appDB.getAllCateoryDB(CoreCoursesMyCoursesComponent.USER_CATEGORY_COURSES_TABLE,selectQuery);
+    }
+
+
+    // getuserCategoryDetails(catid){
+    //     this.platform.ready().then(() => {
+    //         let getQuery = 'SELECT * FROM user_category_courses where category =' + catid;
+    //         let tempcourseArray = [];
+    //         this.db = (<any> window).openDatabase('MoodleMobile', '1.0', 'MoodleMobile', 500 * 1024 * 1024);
+    //         this.db.transaction(function(tx) {
+    //             tx.executeSql(getQuery, [], function(result) {
+    //                  if (result.rows.length > 0) {
+    //                     for (let i = 0; i < result.rows.length; i++) {
+    //                         tempcourseArray.push(result.rows.item(i));
+    //                         console.log('shunmuaraj-result',tempcourseArray);
+    //                     } 
+    //                  }
+    //               }, function(error) {
+    //                 // OK to close here:
+    //                 console.log('shunmugaraj-transaction error: ' + error.message);
+    //               });
+    //         });
+    //         this.courses = tempcourseArray;
+    //         this.filteredCourses = tempcourseArray;
+    //         this.initPrefetchCoursesIcon();
+    //     });
+    // }
     /**
      * Page destroyed.
      */

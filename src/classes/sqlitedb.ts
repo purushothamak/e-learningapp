@@ -142,6 +142,7 @@ export class SQLiteDB {
      */
     constructor(public name: string, private sqlite: SQLite, private platform: Platform) {
         this.init();
+        console.log("Shunmugraj-databaseName:")
     }
 
     /**
@@ -457,6 +458,9 @@ export class SQLiteDB {
         return this.getRecords(table);
     }
 
+    getAllCateoryDB(table: string,select:string): Promise<any> {
+        return this.getRecordsSelectcategory(table,select);
+    }
     /**
      * Get a single field value from a table record where all the given conditions met.
      *
@@ -675,6 +679,28 @@ export class SQLiteDB {
         return this.getRecordsSql(sql, params, limitFrom, limitNum);
     }
 
+
+        /**
+     * Get a number of records which match a particular WHERE clause.
+     *
+     * @param table The table to query.
+     * @param select A fragment of SQL to be used in a where clause in the SQL call.
+     * @param params An array of sql parameters.
+     * @param sort An order to sort the results in.
+     * @param fields A comma separated list of fields to return.
+     * @param limitFrom Return a subset of records, starting at this point.
+     * @param limitNum Return a subset comprising this many records in total.
+     * @return Promise resolved with the records.
+     */
+    getRecordsSelectcategory(table: string,select:string): Promise<any> {
+        if (select) {
+            select = ' WHERE ' + select;
+        }
+        console.log("shunmugaraj-select",select)
+        const sql = `SELECT * FROM ${table} ${select}`;
+        return this.getRecordsSqldata(sql);
+    }
+
     /**
      * Get a number of records using a SQL statement.
      *
@@ -705,6 +731,22 @@ export class SQLiteDB {
         });
     }
 
+     /**
+     * Get a number of records using a SQL statement.
+     *
+     * @param sql The SQL select query to execute.
+     * @return Promise resolved with the records.
+     */
+    getRecordsSqldata(sql: string){
+        return this.execute(sql).then((result) => {
+            // Retrieve the records.
+            const records = [];
+            for (let i = 0; i < result.rows.length; i++) {
+                records.push(result.rows.item(i));
+            }
+            return records;
+        });
+    }
     /**
      * Given a data object, returns the SQL query and the params to insert that record.
      *
@@ -725,6 +767,18 @@ export class SQLiteDB {
         ];
     }
 
+    protected getSqlInsertQueryCategory(table: string, data: object): any[] {
+        this.formatDataToInsert(data);
+
+        const keys = Object.keys(data),
+            fields = keys.join(','),
+            questionMarks = ',?'.repeat(keys.length).substr(1);
+
+        return [
+            `INSERT OR REPLACE INTO ${table} (${fields}) VALUES (${questionMarks})`,
+            keys.map((key) => data[key])
+        ];
+    }
     /**
      * Initialize the database.
      */
@@ -748,12 +802,25 @@ export class SQLiteDB {
      */
     insertRecord(table: string, data: object): Promise<number> {
         const sqlAndParams = this.getSqlInsertQuery(table, data);
-
         return this.execute(sqlAndParams[0], sqlAndParams[1]).then((result) => {
             return result.insertId;
         });
     }
 
+   
+    /**
+     * Insert a record into a table and return the "rowId" field.
+     *
+     * @param table The database table to be inserted into.
+     * @param data A data object with values for one or more fields in the record.
+     * @return Promise resolved with new rowId. Please notice this rowId is internal from SQLite.
+     */
+     insertRecordCategory(table: string, data: object): Promise<number> {
+        const sqlAndParams = this.getSqlInsertQueryCategory(table, data);
+        return this.execute(sqlAndParams[0], sqlAndParams[1]).then((result) => {
+            return result.insertId;
+        });
+    }
     /**
      * Insert multiple records into database as fast as possible.
      *

@@ -474,7 +474,7 @@ ion-app.app-root {
 
     &.select-md,
     &.button-md {
-      background: $card-md-background-color;
+      background-color: #E48E00;
       box-shadow: $card-md-box-shadow;
     }
 
@@ -518,7 +518,7 @@ ion-app.app-root {
       &.button-md,
       &.select-ios,
       &.button-ios {
-        background: $core-dark-item-bg-color;
+        background-color: #E48E00;
       }
     }
   }
@@ -1237,12 +1237,15 @@ ion-app.platform-desktop {
   align-items: center;
   &.button-md {
     min-height: $button-md-height;
+    background-color: #E48E00;
   }
   &.button-large-md {
     min-height: $button-md-large-height;
+    background-color: #E48E00;
   }
   &.button-small-md {
     min-height: $button-md-small-height;
+    background-color: #E48E00;
   }
   &.button-ios {
     min-height: $button-ios-height;

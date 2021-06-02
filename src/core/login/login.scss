@@ -15,7 +15,8 @@ $core-dark-input-login-item-text-color: $core-dark-login-page-text-color !defaul
 
 ion-app.app-root page-core-login-credentials,
 ion-app.app-root page-core-login-reconnect,
-ion-app.app-root page-core-login-site {
+ion-app.app-root page-core-login-site,
+ion-app.app-root page-core-login-forgotten-password {
 
     .login-backgroundimage { 
         background-image: url("#{$assets-path}/img/login_backgroundimage.png");
@@ -61,7 +62,7 @@ ion-app.app-root page-core-login-site {
     @if $core-login-button-outline {
         .button-md.button-default-md, .button-ios.button-default-ios {
             @extend .button-md-light;
-            
+
         }
     }
 
@@ -78,6 +79,7 @@ ion-app.app-root page-core-login-site {
     @if $core-dark-login-button-outline {
         .button-md.button-default-md, .button-ios.button-default-ios {
             @extend .button-md-light;
+           
         }
     }
 
@@ -163,7 +165,6 @@ ion-app.app-root page-core-login-site {
         text-transform: uppercase;
         color: #fff;
         background-color: #E48E00;
-       
     }
  
 }

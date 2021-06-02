@@ -1,4 +1,4 @@
-<core-loading [hideUntil]="coursesLoaded">
+<core-loading [hideUntil]="coursesLoaded" >
     <ion-searchbar #searchbar *ngIf="showFilter" [(ngModel)]="filter" (ionInput)="filterChanged($event)" (ionCancel)="filterChanged()" [placeholder]="'core.courses.filtermycourses' | translate">
     </ion-searchbar>
     <ion-grid no-padding class="safe-area-page">
