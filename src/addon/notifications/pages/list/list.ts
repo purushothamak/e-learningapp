@@ -97,7 +97,6 @@ export class AddonNotificationsListPage {
                 this.notifications = this.notifications.concat(result.notifications);
             }
             this.canLoadMore = result.canLoadMore;
-
             this.markNotificationsAsRead(result.notifications);
         }).catch((error) => {
             this.domUtils.showErrorModalDefault(error, 'addon.notifications.errorgetnotifications', true);

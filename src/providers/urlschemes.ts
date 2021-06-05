@@ -236,7 +236,6 @@ export class CoreCustomURLSchemesProvider {
 
                 // Site exists. We'll allow to add it.
                 modal.dismiss(); // Dismiss modal so it doesn't collide with confirms.
-
                 await this.goToAddSite(data, result);
             }
 

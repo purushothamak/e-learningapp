@@ -15,9 +15,7 @@ $core-dark-input-login-item-text-color: $core-dark-login-page-text-color !defaul
 
 ion-app.app-root page-core-login-credentials,
 ion-app.app-root page-core-login-reconnect,
-ion-app.app-root page-core-login-site,
-ion-app.app-root page-core-login-forgotten-password {
-
+ion-app.app-root page-core-login-site {
     .login-backgroundimage { 
         background-image: url("#{$assets-path}/img/login_backgroundimage.png");
         background-repeat: no-repeat;

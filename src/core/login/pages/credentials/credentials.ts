@@ -75,7 +75,7 @@ export class CoreLoginCredentialsPage implements OnDestroy {
         this.logoUrl = !CoreConfigConstants.forceLoginLogo && navParams.get('logoUrl') || null;
         this.siteConfig = navParams.get('siteConfig');
         this.urlToOpen = navParams.get('urlToOpen');
-
+        
         this.credForm = fb.group({
             username: [navParams.get('username') || '', Validators.required],
             password: ['', Validators.required]

@@ -527,7 +527,6 @@ export class CoreCoursesMyCoursesComponent implements OnInit, OnDestroy {
     protected syncAllcourses(): Promise<any> {
         let userId = this.sitesProvider.getCurrentSiteUserId();
         return this.getAllcurses(userId,this.userCategoryId).then((courses) => {
-            console.log("Shunmugaraj-result",courses)
             this.courses = courses;
             this.filteredCourses = this.courses;
             this.filter = '';
@@ -540,31 +539,7 @@ export class CoreCoursesMyCoursesComponent implements OnInit, OnDestroy {
         let selectQuery = 'category = ' + catid.toString();
         return this.appDB.getAllCateoryDB(CoreCoursesMyCoursesComponent.USER_CATEGORY_COURSES_TABLE,selectQuery);
     }
-
-
-    // getuserCategoryDetails(catid){
-    //     this.platform.ready().then(() => {
-    //         let getQuery = 'SELECT * FROM user_category_courses where category =' + catid;
-    //         let tempcourseArray = [];
-    //         this.db = (<any> window).openDatabase('MoodleMobile', '1.0', 'MoodleMobile', 500 * 1024 * 1024);
-    //         this.db.transaction(function(tx) {
-    //             tx.executeSql(getQuery, [], function(result) {
-    //                  if (result.rows.length > 0) {
-    //                     for (let i = 0; i < result.rows.length; i++) {
-    //                         tempcourseArray.push(result.rows.item(i));
-    //                         console.log('shunmuaraj-result',tempcourseArray);
-    //                     } 
-    //                  }
-    //               }, function(error) {
-    //                 // OK to close here:
-    //                 console.log('shunmugaraj-transaction error: ' + error.message);
-    //               });
-    //         });
-    //         this.courses = tempcourseArray;
-    //         this.filteredCourses = tempcourseArray;
-    //         this.initPrefetchCoursesIcon();
-    //     });
-    // }
+    
     /**
      * Page destroyed.
      */

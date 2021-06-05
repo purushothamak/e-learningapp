@@ -414,7 +414,6 @@ export class CoreLoginSitePage {
                     pageParams['siteName'] = foundSite.name;
                     pageParams['logoUrl'] = foundSite.imageurl;
                 }
-
                 this.navCtrl.push('CoreLoginCredentialsPage', pageParams);
             }
         }).catch(() => {

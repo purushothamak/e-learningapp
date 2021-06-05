@@ -88,7 +88,7 @@
     "addon.calendar.allday": "All day",
     "addon.calendar.calendar": "Calendar",
     "addon.calendar.calendarevent": "E-Learning",
-    "addon.calendar.calendarevents": "E-Learning",
+    "addon.calendar.calendarevents": "Calendar Events",
     "addon.calendar.calendarreminders": "Calendar reminders",
     "addon.calendar.categoryevents": "Category events",
     "addon.calendar.confirmeventdelete": "Are you sure you want to delete the \"{{$a}}\" event?",

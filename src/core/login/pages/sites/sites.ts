@@ -59,7 +59,6 @@ export class CoreLoginSitesPage {
                 this.pushNotificationsProvider.getSiteCounter(site.id).then((counter) => {
                     site.badge = counter;
                 });
-
                 return site;
             });
 

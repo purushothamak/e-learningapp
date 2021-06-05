@@ -515,7 +515,7 @@ export class CoreLoginHelperProvider {
             // Fixed URL is set, go to credentials page.
             const url = typeof CoreConfigConstants.siteurl == 'string' ?
                 CoreConfigConstants.siteurl : CoreConfigConstants.siteurl[0].url;
-
+               
             pageName = 'CoreLoginCredentialsPage';
             params = { siteUrl: url };
         } else {
@@ -1053,7 +1053,6 @@ export class CoreLoginHelperProvider {
                 if (this.sitePluginsProvider.hasSitePluginsLoaded) {
                     // The site has site plugins so the app will be restarted. Store the data and logout.
                     CoreApp.instance.storeRedirect(siteId, page, params);
-
                     return this.sitesProvider.logout();
                 } else {
                     return this.sitesProvider.logout().then(() => {
@@ -1067,6 +1066,7 @@ export class CoreLoginHelperProvider {
             if (siteId) {
                 return this.loadSiteAndPage(page, params, siteId);
             } else {
+               
                 return CoreApp.instance.getRootNavController().setRoot('CoreLoginSitesPage');
             }
         }

@@ -158,7 +158,6 @@ export class CoreLoginReconnectPage {
             e.preventDefault();
             e.stopPropagation();
         }
-
         this.sitesProvider.logout();
     }
 

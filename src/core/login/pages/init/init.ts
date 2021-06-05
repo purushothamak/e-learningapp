@@ -16,8 +16,10 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { CoreAppProvider } from '@providers/app';
+import { CoreApp, CoreStoreConfig } from '@providers/app';
 import { CoreInitDelegate } from '@providers/init';
 import { CoreSitesProvider } from '@providers/sites';
+import { CoreConfigConstants } from '../../../../configconstants';
 import { CoreConstants } from '../../../constants';
 import { CoreLoginHelperProvider } from '../../providers/helper';
 
@@ -90,10 +92,13 @@ export class CoreLoginInitPage {
                     return this.loadPage();                    
                 });
             }
-
             return this.loginHelper.goToSiteInitialPage();
         }
-
-        return this.navCtrl.setRoot('CoreLoginSitesPage');
+        let pageName,params;
+        // Fixed URL is set, go to credentials page.
+        const url = typeof CoreConfigConstants.siteurl == 'string' ? CoreConfigConstants.siteurl : CoreConfigConstants.siteurl[0].url;
+        pageName = 'CoreLoginCredentialsPage';
+        params = { siteUrl: url };
+        return CoreApp.instance.getRootNavController().setRoot(pageName, params, { animate: false });
     }
 }

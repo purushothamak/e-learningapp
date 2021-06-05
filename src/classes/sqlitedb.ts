@@ -142,7 +142,6 @@ export class SQLiteDB {
      */
     constructor(public name: string, private sqlite: SQLite, private platform: Platform) {
         this.init();
-        console.log("Shunmugraj-databaseName:")
     }
 
     /**
@@ -696,7 +695,6 @@ export class SQLiteDB {
         if (select) {
             select = ' WHERE ' + select;
         }
-        console.log("shunmugaraj-select",select)
         const sql = `SELECT * FROM ${table} ${select}`;
         return this.getRecordsSqldata(sql);
     }

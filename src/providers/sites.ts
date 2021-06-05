@@ -1493,17 +1493,7 @@ export class CoreSitesProvider {
             id: 1,
             siteId: siteId
         };
-
-        const entry1 = {
-            userid: 1,
-            siteid: siteId,
-            catid: 1,
-            name: "shunmugaaj"
-        };
-
         await this.appDB.insertRecord(CoreSitesProvider.CURRENT_SITE_TABLE, entry);
-       // await this.appDB.insertRecord(CoreSitesProvider.USER_CATEGORY_TABLE, entry1);
-
         this.eventsProvider.trigger(CoreEventsProvider.LOGIN, {}, siteId);
     }
 
