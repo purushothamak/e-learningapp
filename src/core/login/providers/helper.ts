@@ -425,7 +425,7 @@ export class CoreLoginHelperProvider {
         site = site || this.sitesProvider.getCurrentSite();
         const config = site.getStoredConfig();
 
-        return 'core.mainmenu.' + (config && config.tool_mobile_forcelogout == '1' ? 'logout' : 'changesite');
+        return 'core.mainmenu.' + (config && config.tool_mobile_forcelogout == '1' ? 'Logout' : 'Logout');
     }
 
     /**
