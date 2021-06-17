@@ -372,7 +372,9 @@ export class CoreCoursesDashboardPage implements OnDestroy {
     }   
 
     getAllCategory(userId?:number): Promise<any[]> {
-        let selectQuery = 'studentid = ' + userId 
+        let siteInfo = this.sitesProvider.getCurrentSite()
+        let siteId = siteInfo.id;
+        let selectQuery = 'studentid = ' + userId + ' ' + 'AND' + ' ' +'siteid = ' + "\"" + siteId + "\"" 
         return this.appDB.getAllCateoryDB(CoreCoursesDashboardPage.USER_CATEGORY_TABLE,selectQuery);
     }
 
