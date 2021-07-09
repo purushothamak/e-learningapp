@@ -69,7 +69,7 @@
                         <ion-row no-padding>
                             <ion-col *ngFor="let usercategory of userCategory" no-padding col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4 align-self-stretch >
                                 <ion-card>
-                                    <img src="assets/img/dashboard.png" style="height:132px"/>
+                                    <img src="assets/img/{{usercategory.name}}.png" style="height:132px"/>
                                     <ion-item tappable text-wrap detail-none (click)="openCourse(usercategory.catid,usercategory.name)" class="core-course-link">
                                         <h2>
                                             <core-format-text [text]="usercategory.name" contextLevel="usercategory" [contextInstanceId]="usercategory.catid"></core-format-text>
