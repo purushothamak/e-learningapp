@@ -94,11 +94,12 @@ export class CoreLoginInitPage {
             }
             return this.loginHelper.goToSiteInitialPage();
         }
-        let pageName,params;
-        // Fixed URL is set, go to credentials page.
-        const url = typeof CoreConfigConstants.siteurl == 'string' ? CoreConfigConstants.siteurl : CoreConfigConstants.siteurl[0].url;
-        pageName = 'CoreLoginCredentialsPage';
-        params = { siteUrl: url };
-        return CoreApp.instance.getRootNavController().setRoot(pageName, params, { animate: false });
+        return this.navCtrl.setRoot('CoreLoginSitesPage');
+        // let pageName,params;
+        // // Fixed URL is set, go to credentials page.
+        // const url = typeof CoreConfigConstants.siteurl == 'string' ? CoreConfigConstants.siteurl : CoreConfigConstants.siteurl[0].url;
+        // pageName = 'CoreLoginCredentialsPage';
+        // params = { siteUrl: url };
+        // return CoreApp.instance.getRootNavController().setRoot(pageName, params, { animate: false });
     }
 }

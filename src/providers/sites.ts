@@ -1504,36 +1504,61 @@ export class CoreSitesProvider {
      */
      async logout(): Promise<void> {
         await this.dbReady;
+
         let siteId;
         const promises = [];
-        
-        const siteConfig = this.currentSite.getStoredConfig();
-        siteId = this.currentSite.getId();
-        const site = await this.getSite(siteId);
 
-        if (siteConfig && siteConfig.tool_mobile_forcelogout == '1') {
+        if (this.currentSite) {
+            const siteConfig = this.currentSite.getStoredConfig();
+            siteId = this.currentSite.getId();
+
+            this.currentSite = undefined;
+
+            if (siteConfig && siteConfig.tool_mobile_forcelogout == '1') {
                 promises.push(this.setSiteLoggedOut(siteId, true));
+            }
+
+            promises.push(this.appDB.deleteRecords(CoreSitesProvider.CURRENT_SITE_TABLE, { id: 1 }));
         }
-
-        await site.deleteDB();
-
-        // Site DB deleted, now delete the app from the list of sites.
-        delete this.sites[siteId];
 
         try {
-            await this.appDB.deleteRecords(CoreSitesProvider.SITES_TABLE, { id: siteId });
             await Promise.all(promises);
-        } catch (err) {
-            // DB remove shouldn't fail, but we'll go ahead even if it does.
+        } finally {
+            this.eventsProvider.trigger(CoreEventsProvider.LOGOUT, {}, siteId);
         }
-
-        // Site deleted from sites list, now delete the folder.
-        await site.deleteFolder();
-        this.eventsProvider.trigger(CoreEventsProvider.LOGOUT, {}, siteId);
-        this.eventsProvider.trigger(CoreEventsProvider.SITE_DELETED, site, siteId);
-        promises.push(this.appDB.deleteRecords(CoreSitesProvider.CURRENT_SITE_TABLE, { id: 1 }));
-    
     }
+    //  async logout(): Promise<void> {
+    //     await this.dbReady;
+    //     let siteId;
+    //     const promises = [];
+        
+    //     const siteConfig = this.currentSite.getStoredConfig();
+    //     siteId = this.currentSite.getId();
+    //     const site = await this.getSite(siteId);
+
+    //     if (siteConfig && siteConfig.tool_mobile_forcelogout == '1') {
+    //             promises.push(this.setSiteLoggedOut(siteId, true));
+    //     }
+
+    //     await site.deleteDB();
+
+    //     // Site DB deleted, now delete the app from the list of sites.
+    //     delete this.sites[siteId];
+
+    //     try {
+    //         await this.appDB.deleteRecords(CoreSitesProvider.SITES_TABLE, { id: siteId });
+    //         await Promise.all(promises);
+    //     } catch (err) {
+    //         // DB remove shouldn't fail, but we'll go ahead even if it does.
+    //     }
+
+    //     // Site deleted from sites list, now delete the folder.
+    //     await site.deleteFolder();
+    //     this.eventsProvider.trigger(CoreEventsProvider.LOGOUT, {}, siteId);
+    //     this.eventsProvider.trigger(CoreEventsProvider.SITE_DELETED, site, siteId);
+    //     promises.push(this.appDB.deleteRecords(CoreSitesProvider.CURRENT_SITE_TABLE, { id: 1 }));
+    
+    // }
 
     /**
      * Restores the session to the previous one so the user doesn't has to login everytime the app is started.

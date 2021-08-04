@@ -65,14 +65,14 @@
     "wsextservice": "local_mobile",
     "demo_sites": {
         "student": {
-            "url": "https://stage-elp.gyanmatrix.in/",
-            "username": "student",
-            "password": "moodle"
+            "url": "",
+            "username": "",
+            "password": ""
         },
         "teacher": {
-            "url": "https://stage-elp.gyanmatrix.in/",
-            "username": "admin",
-            "password": "Admin99@"
+            "url": "",
+            "username": "",
+            "password": ""
         }
     },
     "font_sizes": [

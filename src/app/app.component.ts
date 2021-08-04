@@ -61,7 +61,6 @@ export class MoodleMobileApp implements OnInit {
             private network: Network
             ) {
         this.logger = logger.getInstance('AppComponent');
-
         if (this.appProvider.isIOS() && !platform.is('ios')) {
             // Solve problem with wrong detected iPadOS.
             const platforms = platform.platforms();
@@ -100,7 +99,7 @@ export class MoodleMobileApp implements OnInit {
         platform.ready().then(() => {
             // Okay, so the platform is ready and our plugins are available.
             // Here you can do any higher level native things you might need.
-
+            this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);
             // Set StatusBar properties.
             this.appProvider.setStatusBarColor();
 
@@ -346,7 +345,8 @@ export class MoodleMobileApp implements OnInit {
                         viewport.setAttribute('content', 'viewport-fit=cover,' + viewport.getAttribute('content'));
                     });
                 }
-
+                
+                this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);
                 this.eventsProvider.trigger(CoreEventsProvider.ORIENTATION_CHANGE);
             }
         );

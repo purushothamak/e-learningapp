@@ -19,10 +19,10 @@ ion-app.app-root page-core-login-init {
 
         background-image: url("#{$assets-path}/img/splash.png");
         background-repeat: no-repeat;
-        background-size: 100% 100%;
+        background-size: 120% 100%;
         background-position: center;
-        width: 100%;
-        height: 100%;
+        // width: 100%;
+        // height: 100%;
 
         .spinner circle, .spinner line {
             stroke: $core-splash-spinner-color;
