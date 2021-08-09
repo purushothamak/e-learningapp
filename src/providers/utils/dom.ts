@@ -1254,6 +1254,11 @@ export class CoreDomUtilsProvider {
             this.translate.instant('core.delete'), undefined, options);
     }
 
+    showLogoutConfirm(translateMessage: string = 'core.areyousure', translateArgs: any = {}, options?: any): Promise<any> {
+        return this.showConfirm(this.translate.instant(translateMessage, translateArgs), undefined,
+            this.translate.instant('core.logout'), undefined, options);
+    }
+
     /**
      * Show a confirm modal.
      *

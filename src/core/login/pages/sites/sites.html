@@ -25,6 +25,9 @@
             <button *ngIf="showDelete" item-end ion-button icon-only clear color="danger" (click)="deleteSite($event, idx)" [attr.aria-label]="'core.delete' | translate">
                 <ion-icon name="trash"></ion-icon>
             </button>
+            <button *ngIf="showDelete" item-end ion-button icon-only clear color="danger" (click)="logoutSite($event, idx)" [attr.aria-label]="'core.logout' | translate">
+                <ion-icon name="log-out"></ion-icon>
+            </button>
         </a>
     </ion-list>
     <ion-fab core-fab bottom end>

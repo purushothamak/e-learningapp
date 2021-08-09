@@ -52,6 +52,7 @@ export class CoreLoginCredentialsPage implements OnDestroy {
     isFixedUrlSet = false;
     showForgottenPassword = true;
     showScanQR: boolean;
+    showLoginText: boolean;
 
     protected siteConfig;
     protected eventThrown = false;
@@ -118,6 +119,14 @@ export class CoreLoginCredentialsPage implements OnDestroy {
     /**
      * View loaded.
      */
+     ngOnInit(): void {
+        if (!this.appProvider.isOnline()) {
+            this.showLoginText = false
+        } else {
+            this.showLoginText = true
+        }
+    }
+
     ionViewDidLoad(): void {
         this.treatSiteConfig();
         this.isFixedUrlSet = this.loginHelper.isFixedUrlSet();
@@ -265,9 +274,7 @@ export class CoreLoginCredentialsPage implements OnDestroy {
                 // Reset fields so the data is not in the view anymore.
                 this.credForm.controls['username'].reset();
                 this.credForm.controls['password'].reset();
-
                 this.siteId = id;
-
                 return this.loginHelper.goToSiteInitialPage(undefined, undefined, undefined, undefined, this.urlToOpen);
             });
         }).catch((error) => {

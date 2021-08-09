@@ -9,6 +9,7 @@
     "changepasswordlogoutinstructions": "If you prefer to change site or log out, please click the following button:",
     "changepasswordreconnectinstructions": "Click the following button to reconnect to the site. (Take into account that if you didn't change your password successfully, you would return to the previous screen).",
     "confirmdeletesite": "Are you sure you want to delete the site {{sitename}}?",
+    "confirmlogoutsite": "Are you sure you want to logout the site {{sitename}}?",
     "connect": "Connect!",
     "connecttomoodle": "Connect to Moodle",
     "contactyouradministrator": "Contact your site administrator for further help.",

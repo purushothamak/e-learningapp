@@ -13,13 +13,14 @@
 // limitations under the License.
 
 import { Component } from '@angular/core';
-import { IonicPage } from 'ionic-angular';
+import { IonicPage, NavController } from 'ionic-angular';
 import { CoreLoggerProvider } from '@providers/logger';
 import { CoreSitesProvider, CoreSiteBasicInfo } from '@providers/sites';
 import { CoreDomUtilsProvider } from '@providers/utils/dom';
 import { CorePushNotificationsProvider } from '@core/pushnotifications/providers/pushnotifications';
 import { CoreLoginHelperProvider } from '../../providers/helper';
 import { CoreFilterProvider } from '@core/filter/providers/filter';
+import { CoreConfigConstants } from '../../../../configconstants';
 
 /**
  * Page that displays the list of stored sites.
@@ -35,6 +36,7 @@ export class CoreLoginSitesPage {
     protected logger;
 
     constructor(private domUtils: CoreDomUtilsProvider,
+            protected navCtrl: NavController,
             private filterProvider: CoreFilterProvider,
             private sitesProvider: CoreSitesProvider,
             private loginHelper: CoreLoginHelperProvider,
@@ -110,24 +112,52 @@ export class CoreLoginSitesPage {
         });
     }
 
+    logoutSite(e: Event, index: number): void {
+        e.stopPropagation();
+        const site = this.sites[index],
+        siteName = site.siteName;
+
+        this.filterProvider.formatText(siteName, {clean: true, singleLine: true, filter: false}, [], site.id).then((siteName) => {
+
+            this.domUtils.showLogoutConfirm('core.login.confirmlogoutsite', { sitename: siteName }).then(() => {
+                window.localStorage.setItem(site.id, "true");
+                //console.log("Shunmugaraj-logout",site.id)
+            }).catch(() => {
+            // User cancelled, nothing to do.
+            });
+        });
+       
+    }
     /**
      * Login in a site.
      *
      * @param siteId The site ID.
      */
     login(siteId: string): void {
-        const modal = this.domUtils.showModalLoading();
 
-        this.sitesProvider.loadSite(siteId).then((loggedIn) => {
-            if (loggedIn) {
-                return this.loginHelper.goToSiteInitialPage();
-            }
-        }).catch((error) => {
-            this.logger.error('Error loading site ' + siteId, error);
-            this.domUtils.showErrorModalDefault(error, 'Error loading site.');
-        }).finally(() => {
-            modal.dismiss();
-        });
+       let getLogout = window.localStorage.getItem(siteId);
+       console.log("Shunmugaraj-Logout--",getLogout)
+
+       if(getLogout == "true"){
+        // Fixed URL is set, go to credentials page.
+        const url = typeof CoreConfigConstants.siteurl == 'string' ? CoreConfigConstants.siteurl : CoreConfigConstants.siteurl[0].url;
+        const pageParams = { siteUrl: url , siteConfig: "" };
+        this.navCtrl.push('CoreLoginCredentialsPage', pageParams);
+        
+       } else {
+            const modal = this.domUtils.showModalLoading();
+            this.sitesProvider.loadSite(siteId).then((loggedIn) => {
+                if (loggedIn) {
+                    return this.loginHelper.goToSiteInitialPage();
+                }
+            }).catch((error) => {
+                this.logger.error('Error loading site ' + siteId, error);
+                this.domUtils.showErrorModalDefault(error, 'Error loading site.');
+            }).finally(() => {
+                modal.dismiss();
+            });
+       }
+
     }
 
     /**
