@@ -150,7 +150,7 @@ export class CoreCoursesCourseProgressComponent implements OnInit, OnDestroy {
     prefetchCourse(e: Event): void {
         e.preventDefault();
         e.stopPropagation();
-
+console.log("Shunmugaraj-downloaded")
         this.courseHelper.confirmAndPrefetchCourse(this.prefetchCourseData, this.course).catch((error) => {
             if (!this.isDestroyed) {
                 this.domUtils.showErrorModalDefault(error, 'core.course.errordownloadingcourse', true);

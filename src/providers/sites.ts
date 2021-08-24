@@ -120,6 +120,11 @@ export interface CoreSiteBasicInfo {
      * Site home ID.
      */
     siteHomeId?: number;
+
+    /**
+     * UserLoggedOut.
+     */
+    loggedOut?: number;
 }
 
 /**
@@ -1412,6 +1417,7 @@ export class CoreSitesProvider {
                         siteName: CoreConfigConstants.sitename ? CoreConfigConstants.sitename : siteInfo && siteInfo.sitename,
                         avatar: siteInfo && siteInfo.userpictureurl,
                         siteHomeId: siteInfo && siteInfo.siteid || 1,
+                        loggedOut:site.loggedOut
                     };
                 formattedSites.push(basicInfo);
             }
@@ -1607,6 +1613,22 @@ export class CoreSitesProvider {
         }
 
         site.setLoggedOut(loggedOut);
+
+        return this.appDB.updateRecords(CoreSitesProvider.SITES_TABLE, newValues, { id: siteId });
+    }
+
+     /**
+     * @param siteId ID of the site.
+     * @param userlogOut True to set the site as logged out, false otherwise.
+     * @return Promise resolved when done.
+     */
+      async setSiteUserLogOut(siteId: string, userlogOut: number): Promise<any> {
+        await this.dbReady;
+    
+        const site = await this.getSite(siteId);
+        const newValues: any = {
+            loggedOut: userlogOut
+        };
 
         return this.appDB.updateRecords(CoreSitesProvider.SITES_TABLE, newValues, { id: siteId });
     }

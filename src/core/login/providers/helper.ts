@@ -515,7 +515,6 @@ export class CoreLoginHelperProvider {
             // Fixed URL is set, go to credentials page.
             const url = typeof CoreConfigConstants.siteurl == 'string' ?
                 CoreConfigConstants.siteurl : CoreConfigConstants.siteurl[0].url;
-               
             pageName = 'CoreLoginCredentialsPage';
             params = { siteUrl: url };
         } else {

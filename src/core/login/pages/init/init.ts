@@ -16,13 +16,12 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { CoreAppProvider } from '@providers/app';
-import { CoreApp, CoreStoreConfig } from '@providers/app';
 import { CoreInitDelegate } from '@providers/init';
 import { CoreSitesProvider } from '@providers/sites';
-import { CoreConfigConstants } from '../../../../configconstants';
 import { CoreConstants } from '../../../constants';
 import { CoreLoginHelperProvider } from '../../providers/helper';
-
+//import { CoreApp, CoreStoreConfig } from '@providers/app';
+//import { CoreConfigConstants } from '../../../../configconstants';
 /**
  * Page that displays a "splash screen" while the app is being initialized.
  */
@@ -89,7 +88,7 @@ export class CoreLoginInitPage {
         if (this.sitesProvider.isLoggedIn()) {
             if (this.loginHelper.isSiteLoggedOut()) {
                 return this.sitesProvider.logout().then(() => {
-                    return this.loadPage();                    
+                    return this.loadPage();
                 });
             }
             return this.loginHelper.goToSiteInitialPage();

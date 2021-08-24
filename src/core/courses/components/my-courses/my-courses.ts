@@ -305,6 +305,7 @@ export class CoreCoursesMyCoursesComponent implements OnInit, OnDestroy {
             }
 
             return Promise.all(promises).then(() => {
+                courses.sort((a, b) => a.sortorder - b.sortorder)
                 this.courses = courses;
                 this.filteredCourses = this.courses;
                 this.filter = '';
@@ -346,6 +347,7 @@ export class CoreCoursesMyCoursesComponent implements OnInit, OnDestroy {
                         });
                     }));
                 }
+                courses.sort((a, b) => a.sortorder - b.sortorder)
                 this.courses = courses;
                 this.filteredCourses = this.courses;
                 this.insertCoursesListToDB(this.courses);
@@ -527,6 +529,7 @@ export class CoreCoursesMyCoursesComponent implements OnInit, OnDestroy {
     protected syncAllcourses(): Promise<any> {
         let userId = this.sitesProvider.getCurrentSiteUserId();
         return this.getAllcurses(userId,this.userCategoryId).then((courses) => {
+            courses.sort((a, b) => a.sortorder - b.sortorder)
             this.courses = courses;
             this.filteredCourses = this.courses;
             this.filter = '';

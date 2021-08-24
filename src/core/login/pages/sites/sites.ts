@@ -21,7 +21,6 @@ import { CorePushNotificationsProvider } from '@core/pushnotifications/providers
 import { CoreLoginHelperProvider } from '../../providers/helper';
 import { CoreFilterProvider } from '@core/filter/providers/filter';
 import { CoreConfigConstants } from '../../../../configconstants';
-
 /**
  * Page that displays the list of stored sites.
  */
@@ -53,7 +52,6 @@ export class CoreLoginSitesPage {
             if (sites.length == 0) {
                 this.loginHelper.goToAddSite(true);
             }
-
             // Remove protocol from the url to show more url text.
             this.sites = sites.map((site) => {
                 site.siteUrl = site.siteUrl.replace(/^https?:\/\//, '');
@@ -120,31 +118,28 @@ export class CoreLoginSitesPage {
         this.filterProvider.formatText(siteName, {clean: true, singleLine: true, filter: false}, [], site.id).then((siteName) => {
 
             this.domUtils.showLogoutConfirm('core.login.confirmlogoutsite', { sitename: siteName }).then(() => {
-                window.localStorage.setItem(site.id, "true");
-                //console.log("Shunmugaraj-logout",site.id)
+                this.sitesProvider.setSiteUserLogOut(site.id,1).then(() => {
+                    this.ionViewDidLoad();
+                });
             }).catch(() => {
             // User cancelled, nothing to do.
             });
         });
-       
     }
+
     /**
      * Login in a site.
      *
      * @param siteId The site ID.
      */
-    login(siteId: string): void {
-
-       let getLogout = window.localStorage.getItem(siteId);
-       console.log("Shunmugaraj-Logout--",getLogout)
-
-       if(getLogout == "true"){
-        // Fixed URL is set, go to credentials page.
-        const url = typeof CoreConfigConstants.siteurl == 'string' ? CoreConfigConstants.siteurl : CoreConfigConstants.siteurl[0].url;
-        const pageParams = { siteUrl: url , siteConfig: "" };
-        this.navCtrl.push('CoreLoginCredentialsPage', pageParams);
-        
-       } else {
+    login(siteId: string, userlogOut:number,fullName:string): void {
+        var username = fullName.replace(/\s/g, "");
+        if(userlogOut == 1){
+            // Fixed URL is set, go to credentials page.
+            const url = typeof CoreConfigConstants.siteurl == 'string' ? CoreConfigConstants.siteurl : CoreConfigConstants.siteurl[0].url;
+            const pageParams = { siteUrl: url , siteConfig: "", username: username };
+            this.navCtrl.push('CoreLoginCredentialsPage', pageParams);
+        } else {
             const modal = this.domUtils.showModalLoading();
             this.sitesProvider.loadSite(siteId).then((loggedIn) => {
                 if (loggedIn) {
@@ -157,7 +152,6 @@ export class CoreLoginSitesPage {
                 modal.dismiss();
             });
        }
-
     }
 
     /**

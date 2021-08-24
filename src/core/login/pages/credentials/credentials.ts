@@ -275,6 +275,7 @@ export class CoreLoginCredentialsPage implements OnDestroy {
                 this.credForm.controls['username'].reset();
                 this.credForm.controls['password'].reset();
                 this.siteId = id;
+                this.sitesProvider.setSiteUserLogOut(this.siteId,0).then(() => {});
                 return this.loginHelper.goToSiteInitialPage(undefined, undefined, undefined, undefined, this.urlToOpen);
             });
         }).catch((error) => {
