@@ -460,6 +460,10 @@ export class SQLiteDB {
     getAllCateoryDB(table: string,select:string): Promise<any> {
         return this.getRecordsSelectcategory(table,select);
     }
+
+    getUserDB(table: string,select:string): Promise<any> {
+        return this.getRecordsSelectUser(table,select);
+    }
     /**
      * Get a single field value from a table record where all the given conditions met.
      *
@@ -699,6 +703,13 @@ export class SQLiteDB {
         return this.getRecordsSqldata(sql);
     }
 
+    getRecordsSelectUser(table: string,select:string): Promise<any> {
+        if (select) {
+            select = ' WHERE ' + select;
+        }
+        const sql = `SELECT * FROM ${table} ${select}`;
+        return this.getRecordsSqldata(sql);
+    }
     /**
      * Get a number of records using a SQL statement.
      *
@@ -765,7 +776,33 @@ export class SQLiteDB {
         ];
     }
 
+    /**
+     * Given a data object, returns the SQL query and the params to insert that record.
+     *
+     * @param table The database table.
+     * @param data A data object with values for one or more fields in the record.
+     * @return Array with the SQL query and the params.
+     */
     protected getSqlInsertQueryCategory(table: string, data: object): any[] {
+        this.formatDataToInsert(data);
+        const keys = Object.keys(data),
+            fields = keys.join(','),
+            questionMarks = ',?'.repeat(keys.length).substr(1);
+
+        return [
+            `INSERT OR REPLACE INTO ${table} (${fields}) VALUES (${questionMarks})`,
+            keys.map((key) => data[key])
+        ];
+    }
+
+    /**
+     * Given a data object, returns the SQL query and the params to insert that record.
+     *
+     * @param table The database table.
+     * @param data A data object with values for one or more fields in the record.
+     * @return Array with the SQL query and the params.
+     */
+    protected getSqlInsertQueryUser(table: string, data: object): any[] {
         this.formatDataToInsert(data);
 
         const keys = Object.keys(data),
@@ -815,6 +852,20 @@ export class SQLiteDB {
      */
      insertRecordCategory(table: string, data: object): Promise<number> {
         const sqlAndParams = this.getSqlInsertQueryCategory(table, data);
+        return this.execute(sqlAndParams[0], sqlAndParams[1]).then((result) => {
+            return result.insertId;
+        });
+    }
+    
+      /**
+     * Insert a record into a table and return the "rowId" field.
+     *
+     * @param table The database table to be inserted into.
+     * @param data A data object with values for one or more fields in the record.
+     * @return Promise resolved with new rowId. Please notice this rowId is internal from SQLite.
+     */
+    insertRecordUser(table: string, data: object): Promise<number> {
+        const sqlAndParams = this.getSqlInsertQueryUser(table, data);
         return this.execute(sqlAndParams[0], sqlAndParams[1]).then((result) => {
             return result.insertId;
         });

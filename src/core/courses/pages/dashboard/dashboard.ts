@@ -52,6 +52,7 @@ export class CoreCoursesDashboardPage implements OnDestroy {
     protected appDB: SQLiteDB;
     protected dbReady: Promise<any>; // Promise resolved when the app DB is initialized.
     static USER_CATEGORY_TABLE = 'user_category';
+    static USER_DETAILS_TABLE = 'user_details';
     protected appTablesSchemaNew: CoreAppSchema = {
         name: 'CoreCoursesDashboardPage',
         version: 2,
@@ -80,6 +81,41 @@ export class CoreCoursesDashboardPage implements OnDestroy {
             }
         ]
     };
+    protected userTablesSchemaNew: CoreAppSchema = {
+        name: 'CoreCoursesDashboardPage',
+        version: 2,
+        tables: [
+            {
+                name: CoreCoursesDashboardPage.USER_DETAILS_TABLE,
+                columns: [
+                    {
+                        name: 'userid',
+                        type: 'INTEGER',
+                        primaryKey: true
+                    },
+                    {
+                        name: 'userfullname',
+                        type: 'TEXT',
+                        notNull: true,
+                        unique: true
+                    },
+                    {
+                        name: 'userclass',
+                        type: 'TEXT',
+                        notNull: true,
+                        unique: true
+                    },
+                    {
+                        name: 'usercompany',
+                        type: 'TEXT',
+                        notNull: true,
+                        unique: true
+                    },
+                ]
+            }
+        ]
+    }
+
     firstSelectedTab: number;
     siteHomeEnabled = false;
     tabsReady = false;
@@ -99,6 +135,11 @@ export class CoreCoursesDashboardPage implements OnDestroy {
     catImageUrl = '';
     dashboardIcon = '';
     title = '';
+    userDetails: any[];
+    userDetailsArray = [];
+    userFullname = '';
+    userClass = '';
+    userCompany = '';
     protected categoryIds = '';
     protected isDestroyed;
     protected updateSiteObserver;
@@ -111,21 +152,58 @@ export class CoreCoursesDashboardPage implements OnDestroy {
         this.dashboardIcon = '../../../../assets/img/bookIcon.png';
         this.loadSiteName();
         this.appDB = appProvider.getDB();
-        this.dbReady = appProvider.createTablesFromSchema(this.appTablesSchemaNew).catch(() => {
-            // Ignore errors.
-        });
+        this.dbReady = appProvider.createTablesFromSchema(this.appTablesSchemaNew).catch(() => {});
+        this.dbReady = appProvider.createTablesFromSchema(this.userTablesSchemaNew).catch(() => {});
     }
 
 
     ngOnInit(): void {
         if (!this.appProvider.isOnline()) {
+            this.getUserDetails();
             this.syncAllCategory();
            // this.getuserCategoryfromDB();
         } else {
+            this.fetchUserDetails();
             this.fetchUserCategory();
         }
     }
-    
+
+    /**
+     * View User Details.
+     */
+
+    fetchUserDetails(){
+        let siteInfo = this.sitesProvider.getCurrentSite()
+        this.userId = this.sitesProvider.getCurrentSiteUserId();
+        //'5ccfe301dab4c62b40c9ba3daf148ffc', //
+        console.log("Shunmugaraj-User-token",siteInfo.token,siteInfo);
+        const params = {
+            wstoken: '3b12ae24c91908bb0057418d530529e9', //siteInfo.token, 
+            wsfunction:"elpws_get_user_information",
+            moodlewsrestformat:"json",
+            userid:this.userId
+        },
+        userDetailsUrl = siteInfo.siteUrl +'/webservice/rest/server.php?',
+        promise = this.httpClient.post(userDetailsUrl, params).timeout(this.wsProvider.getRequestTimeout()).toPromise();
+        return promise.then((data: any): any => {
+            console.log("Shunmugaraj-User-Data",data);
+            if (typeof data == 'undefined') {
+                return Promise.reject(this.translate.instant('core.cannotconnecttrouble'));
+            } else {
+                this.userDetails = data;
+                this.userFullname = this.userDetails[0].userfullname;
+                this.userClass = this.userDetails[0].userclass;
+                this.userCompany = this.userDetails[0].usercompany;
+                console.log("Shunmugaraj-UserParse",this.userDetails[0].userfullname)
+                this.userDetailsArray = data
+                this.insertUserDetailsToDB(this.userDetailsArray);
+                return data;
+            }
+        }, () => {
+            return Promise.reject(this.translate.instant('core.cannotconnecttrouble'));
+        });
+    }
+
     fetchUserCategory() {
         let siteInfo = this.sitesProvider.getCurrentSite()
         this.userId = this.sitesProvider.getCurrentSiteUserId();
@@ -347,6 +425,21 @@ export class CoreCoursesDashboardPage implements OnDestroy {
         ];
     }
 
+    async insertUserDetailsToDB(userDetailsArray): Promise<void> {
+        await this.dbReady;
+        let siteInfo = this.sitesProvider.getCurrentSite()
+        let userId = this.sitesProvider.getCurrentSiteUserId();
+        let siteId = siteInfo.id;
+        for(let key = 0; key < userDetailsArray.length; key++){
+            const entryuser = {
+                    userid: userDetailsArray[key].userid,
+                    userfullname: userDetailsArray[key].userfullname,
+                    userclass: userDetailsArray[key].userclass ,
+                    usercompany: userDetailsArray[key].usercompany
+            };
+            await this.appDB.insertRecordUser(CoreCoursesDashboardPage.USER_DETAILS_TABLE, (entryuser));
+        }
+    }
 
     async insertCategoryListToDB(categoryArray): Promise<void> {
         await this.dbReady;
@@ -371,11 +464,28 @@ export class CoreCoursesDashboardPage implements OnDestroy {
         });
     }   
 
+    protected getUserDetails(): Promise<any> {
+        let userId = this.sitesProvider.getCurrentSiteUserId();
+        return this.getUser(userId).then((user) => {
+            this.userDetails = user;
+            this.userFullname = this.userDetails[0].userfullname;
+            this.userClass = this.userDetails[0].userclass;
+            this.userCompany = this.userDetails[0].usercompany;
+        });
+    }  
+
     getAllCategory(userId?:number): Promise<any[]> {
         let siteInfo = this.sitesProvider.getCurrentSite()
         let siteId = siteInfo.id;
         let selectQuery = 'studentid = ' + userId + ' ' + 'AND' + ' ' +'siteid = ' + "\"" + siteId + "\"" 
         return this.appDB.getAllCateoryDB(CoreCoursesDashboardPage.USER_CATEGORY_TABLE,selectQuery);
+    }
+
+    getUser(userId?:number): Promise<any[]> {
+        let siteInfo = this.sitesProvider.getCurrentSite()
+        let siteId = siteInfo.id;
+        let selectQuery = 'userid = ' + userId 
+        return this.appDB.getUserDB(CoreCoursesDashboardPage.USER_DETAILS_TABLE,selectQuery);
     }
 
     /**

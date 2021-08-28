@@ -38,5 +38,10 @@ ion-app.app-root page-core-courses-dashboard {
         font-size: 18px;
       }
       .catimgurl{ background-image: url("#{$assets-path}/img/login_backgroundimage.png");}
+
+      .core-dashboard-headerText {
+        text-align: center;
+    }
+
 }
 
