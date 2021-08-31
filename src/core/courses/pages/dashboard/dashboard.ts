@@ -96,20 +96,14 @@ export class CoreCoursesDashboardPage implements OnDestroy {
                     {
                         name: 'userfullname',
                         type: 'TEXT',
-                        notNull: true,
-                        unique: true
                     },
                     {
                         name: 'userclass',
                         type: 'TEXT',
-                        notNull: true,
-                        unique: true
                     },
                     {
                         name: 'usercompany',
                         type: 'TEXT',
-                        notNull: true,
-                        unique: true
                     },
                 ]
             }
