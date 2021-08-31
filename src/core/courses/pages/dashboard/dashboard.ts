@@ -161,7 +161,6 @@ export class CoreCoursesDashboardPage implements OnDestroy {
         if (!this.appProvider.isOnline()) {
             this.getUserDetails();
             this.syncAllCategory();
-           // this.getuserCategoryfromDB();
         } else {
             this.fetchUserDetails();
             this.fetchUserCategory();
@@ -176,7 +175,7 @@ export class CoreCoursesDashboardPage implements OnDestroy {
         let siteInfo = this.sitesProvider.getCurrentSite()
         this.userId = this.sitesProvider.getCurrentSiteUserId();
         //'5ccfe301dab4c62b40c9ba3daf148ffc', //
-        console.log("Shunmugaraj-User-token",siteInfo.token,siteInfo);
+        //console.log("Shunmugaraj-User-token",siteInfo.token,siteInfo);
         const params = {
             wstoken: '3b12ae24c91908bb0057418d530529e9', //siteInfo.token, 
             wsfunction:"elpws_get_user_information",
@@ -186,17 +185,21 @@ export class CoreCoursesDashboardPage implements OnDestroy {
         userDetailsUrl = siteInfo.siteUrl +'/webservice/rest/server.php?',
         promise = this.httpClient.post(userDetailsUrl, params).timeout(this.wsProvider.getRequestTimeout()).toPromise();
         return promise.then((data: any): any => {
-            console.log("Shunmugaraj-User-Data",data);
             if (typeof data == 'undefined') {
                 return Promise.reject(this.translate.instant('core.cannotconnecttrouble'));
             } else {
+                let loginUser = JSON.parse(localStorage.getItem('loginUserinfo'));
+                if (typeof loginUser !== 'undefined' && loginUser !== null){
+                    localStorage.removeItem('loginUserinfo');
+                } 
                 this.userDetails = data;
                 this.userFullname = this.userDetails[0].userfullname;
                 this.userClass = this.userDetails[0].userclass;
                 this.userCompany = this.userDetails[0].usercompany;
-                console.log("Shunmugaraj-UserParse",this.userDetails[0].userfullname)
                 this.userDetailsArray = data
                 this.insertUserDetailsToDB(this.userDetailsArray);
+                let loginUserinfo = {userFullname:this.userDetails[0].userfullname, userClass:this.userDetails[0].userclass,userCompany:this.userDetails[0].usercompany};
+                localStorage.setItem('loginUserinfo', JSON.stringify(loginUserinfo));
                 return data;
             }
         }, () => {
@@ -223,7 +226,6 @@ export class CoreCoursesDashboardPage implements OnDestroy {
                 this.userCategory = data.category;
                 this.categoryArray = data.category
                 this.insertCategoryListToDB(this.categoryArray);
-              //  this.insertCategoryToDB(this.categoryArray);
                 return data;
             }
         }, () => {
@@ -237,7 +239,6 @@ export class CoreCoursesDashboardPage implements OnDestroy {
         this.navCtrl.push('CoreCoursesMyCoursesPage', {cateId:userCategoryId,catName:categoryName});
     }
     
-  
     /**
      * View loaded.
      */
@@ -467,10 +468,16 @@ export class CoreCoursesDashboardPage implements OnDestroy {
     protected getUserDetails(): Promise<any> {
         let userId = this.sitesProvider.getCurrentSiteUserId();
         return this.getUser(userId).then((user) => {
+            let loginUser = JSON.parse(localStorage.getItem('loginUserinfo'));
+            if (typeof loginUser !== 'undefined' && loginUser !== null){
+                localStorage.removeItem('loginUserinfo');
+            } 
             this.userDetails = user;
             this.userFullname = this.userDetails[0].userfullname;
             this.userClass = this.userDetails[0].userclass;
             this.userCompany = this.userDetails[0].usercompany;
+            let loginUserinfooff = {userFullname:this.userDetails[0].userfullname, userClass:this.userDetails[0].userclass,userCompany:this.userDetails[0].usercompany};
+            localStorage.setItem('loginUserinfo', JSON.stringify(loginUserinfooff));
         });
     }  
 

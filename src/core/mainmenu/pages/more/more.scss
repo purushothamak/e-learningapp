@@ -11,6 +11,10 @@ ion-app.app-root page-core-mainmenu-more {
     $core-more-color-ios: $list-ios-text-color!default;
     $core-more-color-md: $list-md-text-color !default;
 
+    .core-dashboard-headerText {
+        text-align: center;
+    }
+    
     .item-block {
         &.item-ios {
             background-color: $core-more-background-ios;

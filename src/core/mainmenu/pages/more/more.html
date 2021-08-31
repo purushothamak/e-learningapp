@@ -5,6 +5,13 @@
 </ion-header>
 <ion-content>
     <ion-list>
+        <ion-card>
+            <div padding>
+                <h1 padding class="core-dashboard-headerText"> Welcome {{userFullname}}!</h1>
+                <h3 padding class="core-dashboard-headerText"> Your class is {{userClass}} </h3>
+                <h3 padding class="core-dashboard-headerText"> Your school is {{userCompany}} </h3>
+            </div>
+        </ion-card>
         <a ion-item core-user-link [userId]="siteInfo.userid" text-wrap>
             <ion-avatar core-user-avatar [user]="siteInfo" item-start></ion-avatar>
             <h2>{{siteInfo.fullname}}</h2>

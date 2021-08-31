@@ -88,7 +88,6 @@ export class CoreLoginSitesPage {
             siteName = site.siteName;
 
         this.filterProvider.formatText(siteName, {clean: true, singleLine: true, filter: false}, [], site.id).then((siteName) => {
-
             this.domUtils.showDeleteConfirm('core.login.confirmdeletesite', { sitename: siteName }).then(() => {
                 this.sitesProvider.deleteSite(site.id).then(() => {
                     this.sites.splice(index, 1);
@@ -114,9 +113,7 @@ export class CoreLoginSitesPage {
         e.stopPropagation();
         const site = this.sites[index],
         siteName = site.siteName;
-
         this.filterProvider.formatText(siteName, {clean: true, singleLine: true, filter: false}, [], site.id).then((siteName) => {
-
             this.domUtils.showLogoutConfirm('core.login.confirmlogoutsite', { sitename: siteName }).then(() => {
                 this.sitesProvider.setSiteUserLogOut(site.id,1).then(() => {
                     this.ionViewDidLoad();

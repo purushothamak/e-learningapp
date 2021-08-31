@@ -46,7 +46,9 @@ export class CoreMainMenuMorePage implements OnDestroy {
     docsUrl: string;
     customItems: CoreMainMenuCustomItem[];
     siteUrl: string;
-
+    userFullname = '';
+    userClass = '';
+    userCompany = '';
     protected subscription;
     protected langObserver;
     protected updateSiteObserver;
@@ -69,6 +71,10 @@ export class CoreMainMenuMorePage implements OnDestroy {
         this.loadSiteInfo();
         this.showScanQR = this.utils.canScanQR() &&
                 !this.sitesProvider.getCurrentSite().isFeatureDisabled('CoreMainMenuDelegate_QrReader');
+                let retrievedObject = JSON.parse(localStorage.getItem('loginUserinfo'));
+                this.userFullname = retrievedObject['userFullname'];
+                this.userClass = retrievedObject['userClass'];
+                this.userCompany = retrievedObject['userCompany'];
     }
 
     /**
@@ -78,10 +84,8 @@ export class CoreMainMenuMorePage implements OnDestroy {
         // Load the handlers.
         this.subscription = this.menuDelegate.getHandlers().subscribe((handlers) => {
             this.allHandlers = handlers;
-
             this.initHandlers();
         });
-
         window.addEventListener('resize', this.initHandlers.bind(this));
     }
 
