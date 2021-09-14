@@ -61,6 +61,9 @@
         <edit-config file="AndroidManifest.xml" mode="merge" target="/manifest/application/activity[@android:name='MainActivity']">
             <activity android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|screenLayout|smallestScreenSize" />
         </edit-config>
+         <edit-config file="AndroidManifest.xml" mode="merge" target="/manifest/application">
+            <application android:allowBackup="false" android:fullBackupContent="false"/>
+        </edit-config>
         <edit-config file="AndroidManifest.xml" mode="merge" target="/manifest/application">
             <application android:largeHeap="true" android:usesCleartextTraffic="true" />
         </edit-config>

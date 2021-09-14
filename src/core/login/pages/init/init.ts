@@ -13,15 +13,15 @@
 // limitations under the License.
 
 import { Component } from '@angular/core';
-import { IonicPage, NavController } from 'ionic-angular';
+import { IonicPage, Platform, NavController } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { CoreAppProvider } from '@providers/app';
 import { CoreInitDelegate } from '@providers/init';
 import { CoreSitesProvider } from '@providers/sites';
 import { CoreConstants } from '../../../constants';
 import { CoreLoginHelperProvider } from '../../providers/helper';
-//import { CoreApp, CoreStoreConfig } from '@providers/app';
-//import { CoreConfigConstants } from '../../../../configconstants';
+import { CoreApp, CoreStoreConfig } from '@providers/app';
+import { CoreConfigConstants } from '../../../../configconstants';
 /**
  * Page that displays a "splash screen" while the app is being initialized.
  */
@@ -32,9 +32,18 @@ import { CoreLoginHelperProvider } from '../../providers/helper';
 })
 export class CoreLoginInitPage {
 
-    constructor(private navCtrl: NavController, private appProvider: CoreAppProvider, private initDelegate: CoreInitDelegate,
+    isLandscape: boolean = false
+
+    constructor(private navCtrl: NavController, private platform: Platform,  private appProvider: CoreAppProvider, private initDelegate: CoreInitDelegate,
         private sitesProvider: CoreSitesProvider, private loginHelper: CoreLoginHelperProvider,
-        private splashScreen: SplashScreen) { }
+        private splashScreen: SplashScreen) { 
+            platform.ready().then(() => {
+                this.isLandscape = this.platform.is('tablet')
+                //['mobile', 'android', 'tablet', 'mobileweb']
+                console.log("Shunmugaraj--Init",this.platform.is('tablet'));
+            })
+        }
+
 
     /**
      * View loaded.
@@ -93,7 +102,22 @@ export class CoreLoginInitPage {
             }
             return this.loginHelper.goToSiteInitialPage();
         }
-        return this.navCtrl.setRoot('CoreLoginSitesPage');
+        this.sitesProvider.getSortedSites().then((sites) => {
+            if (sites.length == 1) {
+                let pageName,params;
+                // Fixed URL is set, go to credentials page.
+                const url = typeof CoreConfigConstants.siteurl == 'string' ? CoreConfigConstants.siteurl : CoreConfigConstants.siteurl[0].url;
+                pageName = 'CoreLoginCredentialsPage';
+                params = { siteUrl: url };
+                return CoreApp.instance.getRootNavController().setRoot(pageName, params, { animate: false });
+            } else {
+                return this.navCtrl.setRoot('CoreLoginSitesPage');
+            }
+
+        }).catch(() => {
+            // Shouldn't happen.
+        });
+        //return this.navCtrl.setRoot('CoreLoginSitesPage');
         // let pageName,params;
         // // Fixed URL is set, go to credentials page.
         // const url = typeof CoreConfigConstants.siteurl == 'string' ? CoreConfigConstants.siteurl : CoreConfigConstants.siteurl[0].url;
