@@ -38,13 +38,13 @@ export class CoreLoginInitPage {
         private sitesProvider: CoreSitesProvider, private loginHelper: CoreLoginHelperProvider,
         private splashScreen: SplashScreen) { 
             platform.ready().then(() => {
-                this.isLandscape = this.platform.is('tablet')
-                //['mobile', 'android', 'tablet', 'mobileweb']
-                console.log("Shunmugaraj--Init",this.platform.is('tablet'));
+                if (this.platform.is('tablet')){
+                    this.isLandscape = this.platform.is('tablet')
+                } else {
+                    this.isLandscape = false
+                }
             })
         }
-
-
     /**
      * View loaded.
      */

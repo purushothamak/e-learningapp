@@ -97,11 +97,8 @@ export class MoodleMobileApp implements OnInit {
         }
 
         platform.ready().then(() => {
-            //['mobile', 'android', 'tablet', 'mobileweb']
-            console.log("Shunmuga",this.platform.is('tablet'));
             if (this.platform.is('tablet')) {
-                // This will only print when on iOS
-                console.log("Shunmugaraj_tablet")
+                // This will only print when on tablet
                 this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.LANDSCAPE)
               } else {
                 // Okay, so the platform is ready and our plugins are available.
