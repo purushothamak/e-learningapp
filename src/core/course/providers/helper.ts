@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import { Injectable, Injector } from '@angular/core';
-import { NavController, Loading } from 'ionic-angular';
+import { NavController, Loading, LoadingController } from 'ionic-angular';
 import { TranslateService } from '@ngx-translate/core';
 import { CoreAppProvider } from '@providers/app';
 import { CoreEventsProvider } from '@providers/events';
@@ -111,8 +111,9 @@ export class CoreCourseHelperProvider {
 
     protected courseDwnPromises: { [s: string]: { [id: number]: Promise<any> } } = {};
     protected logger;
+    public loadingView;
 
-    constructor(private courseProvider: CoreCourseProvider,
+    constructor(private courseProvider: CoreCourseProvider, public loadingCtrl:LoadingController,
             private domUtils: CoreDomUtilsProvider,
             private moduleDelegate: CoreCourseModuleDelegate,
             private prefetchDelegate: CoreCourseModulePrefetchDelegate,
@@ -297,11 +298,9 @@ export class CoreCourseHelperProvider {
             initialTitle = data.title,
             siteId = this.sitesProvider.getCurrentSiteId();
         let promise;
-
         data.downloadSucceeded = false;
         data.prefetchCourseIcon = 'spinner';
         data.title = 'core.downloading';
-
         // Get the sections first if needed.
         if (sections) {
             promise = Promise.resolve(sections);
@@ -314,6 +313,11 @@ export class CoreCourseHelperProvider {
             // Confirm the download.
             return this.confirmDownloadSizeSection(course.id, undefined, sections, true).then(() => {
                 // User confirmed, get the course handlers if needed.
+                this.loadingView = this.loadingCtrl.create({
+                    spinner: 'crescent',
+                    content: `Downloading`,
+                    });
+                this.loadingView.present();
                 const subPromises = [];
                 if (!courseHandlers) {
                     subPromises.push(this.courseOptionsDelegate.getHandlersToDisplay(this.injector, course)
@@ -334,7 +338,7 @@ export class CoreCourseHelperProvider {
                 }).then(() => {
                     // Download successful.
                     data.downloadSucceeded = true;
-
+                    this.loadingView.dismiss()
                     return true;
                 });
             }, (error): any => {
@@ -1568,6 +1572,7 @@ export class CoreCourseHelperProvider {
         return this.prefetchDelegate.prefetchModules(downloadId, modules, courseId, (data) => {
             section.count = data.count;
             section.total = data.total;
+            this.loadingView.setContent('Course Downloading'+ ' ' + data.count + ' ' + '/' + ' ' + data.total)
         });
     }
 

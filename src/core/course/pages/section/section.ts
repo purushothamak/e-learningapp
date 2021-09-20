@@ -52,8 +52,8 @@ export class CoreCourseSectionPage implements OnDestroy {
     courseHandlers: CoreCourseOptionsHandlerToDisplay[];
     courseMenuHandlers: CoreCourseOptionsMenuHandlerToDisplay[] = [];
     dataLoaded: boolean;
-    downloadEnabled = false;
-    downloadEnabledIcon = 'square-outline'; // Disabled by default.
+    downloadEnabled = true;
+    downloadEnabledIcon = 'checkbox-outline'; // 'square-outline' Disabled by default.
     prefetchCourseData = {
         prefetchCourseIcon: 'spinner',
         title: 'core.course.downloadcourse'
