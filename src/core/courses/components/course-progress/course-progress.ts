@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import { Component, Input, OnInit, OnDestroy, Optional } from '@angular/core';
-import { NavController, PopoverController } from 'ionic-angular';
+import { NavController, PopoverController, LoadingController } from 'ionic-angular';
 import { CoreEventsProvider } from '@providers/events';
 import { CoreSitesProvider } from '@providers/sites';
 import { CoreDomUtilsProvider } from '@providers/utils/dom';
@@ -56,9 +56,10 @@ export class CoreCoursesCourseProgressComponent implements OnInit, OnDestroy {
     protected isDestroyed = false;
     protected courseStatusObserver;
     protected siteUpdatedObserver;
+    public loadingView;
 
     constructor(@Optional() private navCtrl: NavController, private courseHelper: CoreCourseHelperProvider,
-            private domUtils: CoreDomUtilsProvider,
+            private domUtils: CoreDomUtilsProvider, public loadingCtrl:LoadingController,
             private courseProvider: CoreCourseProvider, private eventsProvider: CoreEventsProvider,
             private sitesProvider: CoreSitesProvider, private coursesProvider: CoreCoursesProvider,
             private popoverCtrl: PopoverController, private userProvider: CoreUserProvider) { }
@@ -150,10 +151,22 @@ export class CoreCoursesCourseProgressComponent implements OnInit, OnDestroy {
     prefetchCourse(e: Event): void {
         e.preventDefault();
         e.stopPropagation();
+        if(this.prefetchCourseData.prefetchCourseIcon == 'cloud-download'){
+            this.loadingView = this.loadingCtrl.create({
+                spinner: 'crescent',
+                content: `Checking devices space availabilty`,
+                });
+            this.loadingView.present();
+        }
+
         this.courseHelper.confirmAndPrefetchCourse(this.prefetchCourseData, this.course).catch((error) => {
+            this.loadingView.dismiss();
             if (!this.isDestroyed) {
+                this.loadingView.present();
                 this.domUtils.showErrorModalDefault(error, 'core.course.errordownloadingcourse', true);
             }
+        }).finally(() => {
+            this.loadingView.dismiss();
         });
     }
 

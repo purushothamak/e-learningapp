@@ -13,7 +13,9 @@
             <h2>
                 <core-icon name="fa-star" *ngIf="course.isfavourite"></core-icon>
                 <core-format-text [text]="course.fullname" contextLevel="course" [contextInstanceId]="course.id"></core-format-text>
+                <ion-icon *ngIf="prefetchCourseData.prefetchCourseIcon == 'refresh'" name="checkmark" color="success"></ion-icon>
             </h2>
+            
         </div>
 
         <div class="core-button-spinner" *ngIf="downloadCourseEnabled && !courseOptionMenuEnabled && showDownload">

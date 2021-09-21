@@ -112,6 +112,7 @@ export class CoreCourseHelperProvider {
     protected courseDwnPromises: { [s: string]: { [id: number]: Promise<any> } } = {};
     protected logger;
     public loadingView;
+    public loadingEnabled:boolean = false
 
     constructor(private courseProvider: CoreCourseProvider, public loadingCtrl:LoadingController,
             private domUtils: CoreDomUtilsProvider,
@@ -309,15 +310,16 @@ export class CoreCourseHelperProvider {
         }
 
         return promise.then((sections) => {
-
             // Confirm the download.
             return this.confirmDownloadSizeSection(course.id, undefined, sections, true).then(() => {
                 // User confirmed, get the course handlers if needed.
+                this.loadingEnabled = true
                 this.loadingView = this.loadingCtrl.create({
                     spinner: 'crescent',
-                    content: `Downloading`,
+                    content: `Checking course in available sections`,
                     });
                 this.loadingView.present();
+
                 const subPromises = [];
                 if (!courseHandlers) {
                     subPromises.push(this.courseOptionsDelegate.getHandlersToDisplay(this.injector, course)
@@ -337,6 +339,7 @@ export class CoreCourseHelperProvider {
                     return this.prefetchCourse(course, sections, courseHandlers, menuHandlers, siteId);
                 }).then(() => {
                     // Download successful.
+                    this.loadingEnabled = false;
                     data.downloadSucceeded = true;
                     this.loadingView.dismiss()
                     return true;
@@ -451,7 +454,7 @@ export class CoreCourseHelperProvider {
     confirmDownloadSizeSection(courseId: number, section?: any, sections?: any[], alwaysConfirm?: boolean): Promise<any> {
         let sizePromise,
             haveEmbeddedFiles = false;
-
+            this.loadingEnabled = false;
         // Calculate the size of the download.
         if (section && section.id != CoreCourseProvider.ALL_SECTIONS_ID) {
             sizePromise = this.prefetchDelegate.getDownloadSize(section.modules, courseId);
@@ -1572,7 +1575,9 @@ export class CoreCourseHelperProvider {
         return this.prefetchDelegate.prefetchModules(downloadId, modules, courseId, (data) => {
             section.count = data.count;
             section.total = data.total;
-            this.loadingView.setContent('Course Downloading'+ ' ' + data.count + ' ' + '/' + ' ' + data.total)
+            if(this.loadingEnabled){
+                this.loadingView.setContent('Course section downloading'+ ' ' + data.count + ' ' + '/' + ' ' + data.total)
+            }
         });
     }
 
