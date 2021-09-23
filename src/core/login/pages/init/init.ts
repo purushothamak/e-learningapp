@@ -32,16 +32,16 @@ import { CoreConfigConstants } from '../../../../configconstants';
 })
 export class CoreLoginInitPage {
 
-    isLandscape: boolean = false
+    isTabletView: boolean = false
 
     constructor(private navCtrl: NavController, private platform: Platform,  private appProvider: CoreAppProvider, private initDelegate: CoreInitDelegate,
         private sitesProvider: CoreSitesProvider, private loginHelper: CoreLoginHelperProvider,
         private splashScreen: SplashScreen) { 
             platform.ready().then(() => {
                 if (this.platform.is('tablet')){
-                    this.isLandscape = this.platform.is('tablet')
+                    this.isTabletView = this.platform.is('tablet')
                 } else {
-                    this.isLandscape = false
+                    this.isTabletView = false
                 }
             })
         }
@@ -94,6 +94,7 @@ export class CoreLoginInitPage {
      * @return Promise resolved when done.
      */
     protected loadPage(): Promise<any> {
+        
         if (this.sitesProvider.isLoggedIn()) {
             if (this.loginHelper.isSiteLoggedOut()) {
                 return this.sitesProvider.logout().then(() => {
@@ -102,6 +103,7 @@ export class CoreLoginInitPage {
             }
             return this.loginHelper.goToSiteInitialPage();
         }
+
         this.sitesProvider.getSortedSites().then((sites) => {
             if (sites.length == 1) {
                 let pageName,params;
@@ -113,10 +115,10 @@ export class CoreLoginInitPage {
             } else {
                 return this.navCtrl.setRoot('CoreLoginSitesPage');
             }
-
         }).catch(() => {
             // Shouldn't happen.
         });
+        
         //return this.navCtrl.setRoot('CoreLoginSitesPage');
         // let pageName,params;
         // // Fixed URL is set, go to credentials page.

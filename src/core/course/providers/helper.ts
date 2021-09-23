@@ -1576,7 +1576,7 @@ export class CoreCourseHelperProvider {
             section.count = data.count;
             section.total = data.total;
             if(this.loadingEnabled){
-                this.loadingView.setContent('Course section downloading'+ ' ' + data.count + ' ' + '/' + ' ' + data.total)
+                this.loadingView.setContent('Course section downloading '+ ' ' + data.count + ' ' + '/' + ' ' + data.total)
             }
         });
     }

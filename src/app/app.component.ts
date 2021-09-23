@@ -97,15 +97,10 @@ export class MoodleMobileApp implements OnInit {
         }
 
         platform.ready().then(() => {
-            if (this.platform.is('tablet')) {
-                // This will only print when on tablet
-                this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.LANDSCAPE)
-              } else {
-                // Okay, so the platform is ready and our plugins are available.
-                // Here you can do any higher level native things you might need.
-                this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);
-              }
 
+            // Okay, so the platform is ready and our plugins are available.
+            // Here you can do any higher level native things you might need.
+            this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);
  
             // Set StatusBar properties.
             this.appProvider.setStatusBarColor();
