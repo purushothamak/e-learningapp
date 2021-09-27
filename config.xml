@@ -36,7 +36,7 @@
     <preference name="load-url-timeout" value="60000" />
     <preference name="SplashScreen" value="screen" />
     <preference name="SplashScreenDelay" value="15000" />
-    <preference name="SplashMaintainAspectRatio" value="true" />
+    <preference name="SplashMaintainAspectRatio" value="false" />
     <preference name="SplashShowOnlyFirstTime" value="false" />
     <preference name="SplashScreenSpinnerColor" value="#E48E00" />
     <preference name="android-minSdkVersion" value="19" />
@@ -240,12 +240,12 @@
         <splash density="land-xhdpi" src="resources/android/splash/drawable-land-xhdpi-screen.png" />
         <splash density="land-xxhdpi" src="resources/android/splash/drawable-land-xxhdpi-screen.png" />
         <splash density="land-xxxhdpi" src="resources/android/splash/drawable-land-xxxhdpi-screen.png" />
-        <splash density="port-ldpi" src="resources/android/splash/drawable-port-ldpi-screen.png" />
+        <splash density="port-ldpi" src="resources/android/splash/drawable-port-ldpi-screen.png" />  
         <splash density="port-mdpi" src="resources/android/splash/drawable-port-mdpi-screen.png" />
         <splash density="port-hdpi" src="resources/android/splash/drawable-port-hdpi-screen.png" />
         <splash density="port-xhdpi" src="resources/android/splash/drawable-port-xhdpi-screen.png" />
         <splash density="port-xxhdpi" src="resources/android/splash/drawable-port-xxhdpi-screen.png" />
-        <splash density="port-xxxhdpi" src="resources/android/splash/drawable-port-xxxhdpi-screen.png" />
+        <splash density="port-xxxhdpi" src="resources/android/splash/drawable-port-xxxhdpi-screen.png" /> 
     </platform>
     <platform name="ios">
         <resource-file src="GoogleService-Info.plist" />
