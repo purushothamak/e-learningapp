@@ -1851,7 +1851,7 @@
     "core.login.stillcantconnect": "Still can't connect?",
     "core.login.submit": "Submit",
     "core.login.supplyinfo": "More details",
-    "core.login.username": "Email Address",
+    "core.login.username": "Username",
     "core.login.usernameoremail": "Enter either username or email address",
     "core.login.usernamerequired": "Username required",
     "core.login.usernotaddederror": "User not added - error",

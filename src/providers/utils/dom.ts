@@ -65,9 +65,9 @@ export class CoreDomUtilsProvider {
     protected debugDisplay = false; // Whether to display debug messages. Store it in a variable to make it synchronous.
     protected displayedAlerts = {}; // To prevent duplicated alerts.
     protected logger;
-
+    public loadingView;
     constructor(protected translate: TranslateService,
-            protected loadingCtrl: LoadingController,
+            public loadingCtrl: LoadingController,
             protected toastCtrl: ToastController,
             protected alertCtrl: AlertController,
             protected textUtils: CoreTextUtilsProvider,
@@ -1357,6 +1357,17 @@ export class CoreDomUtilsProvider {
         return this.showErrorModalDefault(error, defaultError, needsTranslate, autocloseTime);
     }
 
+   async showLoading(text?: string){
+        this.loadingView = this.loadingCtrl.create({
+            spinner: 'crescent',
+            content: text,
+            });
+        await this.loadingView.present();
+    }
+
+   async hideLoading(){
+       await this.loadingView.dismiss();
+    }
     /**
      * Displays a loading modal window.
      *

@@ -98,4 +98,25 @@ ion-app.app-root page-core-mainmenu-more {
             }
         }
     }
+    
+    .loading {
+        display:flex;
+        justify-content: center;
+    }
+    .loading::after {
+        content: "";
+        width:30px;
+        height:30px;
+        border: 3px solid transparent;
+        border-top-color: #E48E00;
+        border-radius: 50%;
+        animation: loading 1s linear infinite;
+
+    }
+    @keyframes loading {
+        to {
+            transform: rotate(1turn);
+        }
+        
+    }
 }

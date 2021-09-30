@@ -52,6 +52,8 @@ export class CoreMainMenuMorePage implements OnDestroy {
     protected subscription;
     protected langObserver;
     protected updateSiteObserver;
+    public loadingView:boolean = false
+
 
     constructor(protected menuDelegate: CoreMainMenuDelegate,
             protected sitesProvider: CoreSitesProvider,
@@ -76,7 +78,6 @@ export class CoreMainMenuMorePage implements OnDestroy {
                 this.userClass = retrievedObject['userClass'];
                 this.userCompany = retrievedObject['userCompany'];
     }
-
     /**
      * View loaded.
      */
@@ -209,6 +210,7 @@ export class CoreMainMenuMorePage implements OnDestroy {
      * Logout the user.
      */
     logout(): void {
+        this.loadingView = true;
         this.sitesProvider.logout();
     }
 }

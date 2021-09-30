@@ -313,10 +313,11 @@ export class CoreCourseHelperProvider {
             // Confirm the download.
             return this.confirmDownloadSizeSection(course.id, undefined, sections, true).then(() => {
                 // User confirmed, get the course handlers if needed.
+                this.domUtils.hideLoading();
                 this.loadingEnabled = true
                 this.loadingView = this.loadingCtrl.create({
                     spinner: 'crescent',
-                    content: `Checking course in available sections`,
+                    content: `Downloading...`,
                     });
                 this.loadingView.present();
 
@@ -1576,7 +1577,7 @@ export class CoreCourseHelperProvider {
             section.count = data.count;
             section.total = data.total;
             if(this.loadingEnabled){
-                this.loadingView.setContent('Course section downloading '+ ' ' + data.count + ' ' + '/' + ' ' + data.total)
+                this.loadingView.setContent('Downloading' + ' ' + data.count + ' ' + '/' + ' ' + data.total)
             }
         });
     }
