@@ -249,22 +249,23 @@ export class CoreCourseHelperProvider {
         const promises = [];
         let allSectionsSection,
             allSectionsStatus;
-
-        sections.forEach((section) => {
-            if (section.id === CoreCourseProvider.ALL_SECTIONS_ID) {
-                // "All sections" section status is calculated using the status of the rest of sections.
-                allSectionsSection = section;
-                section.isCalculating = true;
-            } else {
-                section.isCalculating = true;
-                promises.push(this.calculateSectionStatus(section, courseId, refresh, checkUpdates).then((result) => {
-                    // Calculate "All sections" status.
-                    allSectionsStatus = this.filepoolProvider.determinePackagesStatus(allSectionsStatus, result.status);
-                }).finally(() => {
-                    section.isCalculating = false;
-                }));
+            if(undefined !== sections && sections.length){
+                sections.forEach((section) => {
+                    if (section.id === CoreCourseProvider.ALL_SECTIONS_ID) {
+                        // "All sections" section status is calculated using the status of the rest of sections.
+                        allSectionsSection = section;
+                        section.isCalculating = true;
+                    } else {
+                        section.isCalculating = true;
+                        promises.push(this.calculateSectionStatus(section, courseId, refresh, checkUpdates).then((result) => {
+                            // Calculate "All sections" status.
+                            allSectionsStatus = this.filepoolProvider.determinePackagesStatus(allSectionsStatus, result.status);
+                        }).finally(() => {
+                            section.isCalculating = false;
+                        }));
+                    }
+                });
             }
-        });
 
         return Promise.all(promises).then(() => {
             if (allSectionsSection) {
@@ -308,7 +309,7 @@ export class CoreCourseHelperProvider {
         } else {
             promise = this.courseProvider.getSections(course.id, false, true);
         }
-
+        
         return promise.then((sections) => {
             // Confirm the download.
             return this.confirmDownloadSizeSection(course.id, undefined, sections, true).then(() => {
@@ -349,7 +350,7 @@ export class CoreCourseHelperProvider {
                 // User cancelled or there was an error calculating the size.
                 data.prefetchCourseIcon = initialIcon;
                 data.title = initialTitle;
-
+                this.domUtils.hideLoading();
                 return Promise.reject(error);
             });
         });

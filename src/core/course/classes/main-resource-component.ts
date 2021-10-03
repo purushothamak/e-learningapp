@@ -25,7 +25,7 @@ import { CoreCourseHelperProvider } from '@core/course/providers/helper';
 import { CoreCourseProvider } from '@core/course/providers/course';
 import { CoreCourseModuleMainComponent, CoreCourseModuleDelegate } from '@core/course/providers/module-delegate';
 import { CoreCourseModulePrefetchDelegate } from '@core/course/providers/module-prefetch-delegate';
-import { CoreCourseSectionPage } from '@core/course/pages/section/section.ts';
+import { CoreCourseSectionPage } from '@core/course/pages/section/section';
 import { CoreContentLinksHelperProvider } from '@core/contentlinks/providers/helper';
 import { AddonBlogProvider } from '@addon/blog/providers/blog';
 import { CoreConstants } from '@core/constants';

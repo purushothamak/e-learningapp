@@ -88,7 +88,7 @@ export class CoreCourseFormatComponent implements OnInit, OnChanges, OnDestroy {
             eventsProvider: CoreEventsProvider, private sitesProvider: CoreSitesProvider, private content: Content,
             prefetchDelegate: CoreCourseModulePrefetchDelegate, private modalCtrl: ModalController,
             private courseProvider: CoreCourseProvider) {
-
+                
         this.selectOptions.title = translate.instant('core.course.sections');
         this.completionChanged = new EventEmitter();
 
@@ -98,7 +98,7 @@ export class CoreCourseFormatComponent implements OnInit, OnChanges, OnDestroy {
         // Listen for section status changes.
         this.sectionStatusObserver = eventsProvider.on(CoreEventsProvider.SECTION_STATUS_CHANGED, (data) => {
             if (this.downloadEnabled && this.sections && this.sections.length && this.course && data.sectionId &&
-                    data.courseId == this.course.id) {
+                    data.courseId == this.course.id) {   
                 // Check if the affected section is being downloaded.
                 // If so, we don't update section status because it'll already be updated when the download finishes.
                 const downloadId = this.courseHelper.getSectionDownloadId({ id: data.sectionId });
