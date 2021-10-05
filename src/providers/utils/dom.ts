@@ -66,6 +66,7 @@ export class CoreDomUtilsProvider {
     protected displayedAlerts = {}; // To prevent duplicated alerts.
     protected logger;
     public loadingView;
+    public loadingViewEnabled: boolean = false;
     constructor(protected translate: TranslateService,
             public loadingCtrl: LoadingController,
             protected toastCtrl: ToastController,
@@ -1358,6 +1359,7 @@ export class CoreDomUtilsProvider {
     }
 
    async showLoading(text?: string){
+        this.loadingViewEnabled = true;
         this.loadingView = this.loadingCtrl.create({
             spinner: 'crescent',
             content: text,
@@ -1366,6 +1368,7 @@ export class CoreDomUtilsProvider {
     }
 
    async hideLoading(){
+    this.loadingViewEnabled = false;
        await this.loadingView.dismiss();
     }
     /**

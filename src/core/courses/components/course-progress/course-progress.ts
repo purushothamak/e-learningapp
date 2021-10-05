@@ -52,7 +52,7 @@ export class CoreCoursesCourseProgressComponent implements OnInit, OnDestroy {
     showSpinner = false;
     downloadCourseEnabled: boolean;
     courseOptionMenuEnabled: boolean;
-
+    loadingEnabled:boolean = false;
     protected isDestroyed = false;
     protected courseStatusObserver;
     protected siteUpdatedObserver;
@@ -152,10 +152,15 @@ export class CoreCoursesCourseProgressComponent implements OnInit, OnDestroy {
         e.stopPropagation();
         if(this.prefetchCourseData.prefetchCourseIcon == 'cloud-download'){
             this.domUtils.showLoading("Checking devices space availabilty...");
+            this.loadingEnabled = true
         }
         
         this.courseHelper.confirmAndPrefetchCourse(this.prefetchCourseData, this.course).catch((error) => {
             if (!this.isDestroyed) {
+                if(this.loadingEnabled){
+                    this.domUtils.hideLoading();
+                }
+                this.courseHelper.loadingView.dismiss();
                 this.domUtils.showErrorModalDefault(error, 'core.course.errordownloadingcourse', true);
             }
         });

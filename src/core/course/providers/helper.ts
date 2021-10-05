@@ -314,7 +314,9 @@ export class CoreCourseHelperProvider {
             // Confirm the download.
             return this.confirmDownloadSizeSection(course.id, undefined, sections, true).then(() => {
                 // User confirmed, get the course handlers if needed.
-                this.domUtils.hideLoading();
+                if(this.domUtils.loadingViewEnabled){
+                    this.domUtils.hideLoading();
+                }
                 this.loadingEnabled = true
                 this.loadingView = this.loadingCtrl.create({
                     spinner: 'crescent',
@@ -350,7 +352,9 @@ export class CoreCourseHelperProvider {
                 // User cancelled or there was an error calculating the size.
                 data.prefetchCourseIcon = initialIcon;
                 data.title = initialTitle;
-                this.domUtils.hideLoading();
+                if(this.domUtils.loadingViewEnabled){
+                    this.domUtils.hideLoading();
+                }
                 return Promise.reject(error);
             });
         });
