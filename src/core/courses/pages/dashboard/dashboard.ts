@@ -156,15 +156,47 @@ export class CoreCoursesDashboardPage implements OnDestroy {
             this.getUserDetails();
             this.syncAllCategory();
         } else {
+            this.userLoginReportApi()
             this.fetchUserDetails();
             this.fetchUserCategory();
         }
     }
 
     /**
+     * Login the user report to admin.
+     */
+    userLoginReportApi(){
+        let siteInfo = this.sitesProvider.getCurrentSite()
+        this.userId = this.sitesProvider.getCurrentSiteUserId();
+        const current = new Date();
+        const timestamp = current.getTime();
+        const params = {
+            wstoken: siteInfo.token, 
+            wsfunction:"local_platform_reportapi",
+            moodlewsrestformat:"json",
+            userid: this.userId,
+            loginintime: timestamp,
+            platform:"m"
+
+        },
+        userLoginRptUrl = siteInfo.siteUrl +'/webservice/rest/server.php?',
+        promise = this.httpClient.post(userLoginRptUrl, params).timeout(this.wsProvider.getRequestTimeout()).toPromise();
+        return promise.then((data: any): any => {
+            if (typeof data == 'undefined') {
+                return Promise.reject(this.translate.instant('core.cannotconnecttrouble'));
+            } else {
+                console.log("Shunmugaraj-Sucess-report")
+                return data;
+            }
+        }, () => {
+            return Promise.reject(this.translate.instant('core.cannotconnecttrouble'));
+        });
+    }
+
+    /**
      * View User Details.
      */
-
+    
     fetchUserDetails(){
         let siteInfo = this.sitesProvider.getCurrentSite()
         this.userId = this.sitesProvider.getCurrentSiteUserId();

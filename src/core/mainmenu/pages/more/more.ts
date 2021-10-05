@@ -14,6 +14,8 @@
 
 import { Component, OnDestroy } from '@angular/core';
 import { IonicPage, NavController } from 'ionic-angular';
+import { HttpClient } from '@angular/common/http';
+import { CoreWSProvider } from '@providers/ws';
 import { CoreEventsProvider } from '@providers/events';
 import { CoreSitesProvider } from '@providers/sites';
 import { CoreCustomURLSchemesProvider, CoreCustomURLSchemesHandleError } from '@providers/urlschemes';
@@ -56,8 +58,8 @@ export class CoreMainMenuMorePage implements OnDestroy {
 
 
     constructor(protected menuDelegate: CoreMainMenuDelegate,
-            protected sitesProvider: CoreSitesProvider,
-            protected navCtrl: NavController,
+            protected sitesProvider: CoreSitesProvider,public httpClient: HttpClient,
+            protected navCtrl: NavController,protected wsProvider: CoreWSProvider,
             protected mainMenuProvider: CoreMainMenuProvider,
             eventsProvider: CoreEventsProvider,
             protected loginHelper: CoreLoginHelperProvider,
@@ -212,5 +214,36 @@ export class CoreMainMenuMorePage implements OnDestroy {
     logout(): void {
         this.loadingView = true;
         this.sitesProvider.logout();
+        this.userLogoutReportApi();
+    }
+
+    /**
+     * Logout the user report to admin.
+     */
+    userLogoutReportApi(){
+        let siteInfo = this.sitesProvider.getCurrentSite()
+        let userId = this.sitesProvider.getCurrentSiteUserId();
+        const current = new Date();
+        const timestamp = current.getTime();
+        const params = {
+            wstoken: siteInfo.token, 
+            wsfunction:"local_platform_reportapi",
+            moodlewsrestformat:"json",
+            userid: userId,
+            logouttime: timestamp,
+            platform:"m"
+        },
+        userLogoutRptUrl = siteInfo.siteUrl +'/webservice/rest/server.php?',
+        promise = this.httpClient.post(userLogoutRptUrl, params).timeout(this.wsProvider.getRequestTimeout()).toPromise();
+        return promise.then((data: any): any => {
+            if (typeof data == 'undefined') {
+                return Promise.reject(this.translate.instant('core.cannotconnecttrouble'));
+            } else {
+                return data;
+            }
+        }, () => {
+            return Promise.reject(this.translate.instant('core.cannotconnecttrouble'));
+        });
+        
     }
 }
