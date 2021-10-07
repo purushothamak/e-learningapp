@@ -17,6 +17,7 @@ import {
     LoadingController, Loading, ToastController, Toast, AlertController, Alert, Content, PopoverController,
     ModalController, AlertButton, AlertOptions
 } from 'ionic-angular';
+import { CoreAppProvider } from '@providers/app'
 import { DomSanitizer } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 import { CoreTextUtilsProvider } from './text';
@@ -68,7 +69,7 @@ export class CoreDomUtilsProvider {
     public loadingView;
     public loadingViewEnabled: boolean = false;
     constructor(protected translate: TranslateService,
-            public loadingCtrl: LoadingController,
+            public loadingCtrl: LoadingController, private appProvider: CoreAppProvider,
             protected toastCtrl: ToastController,
             protected alertCtrl: AlertController,
             protected textUtils: CoreTextUtilsProvider,
@@ -1309,8 +1310,10 @@ export class CoreDomUtilsProvider {
      * @return Promise resolved with the alert modal.
      */
     showErrorModal(error: any, needsTranslate?: boolean, autocloseTime?: number): Promise<Alert> {
-        const message = this.getErrorMessage(error, needsTranslate);
-
+        let message = this.getErrorMessage(error, needsTranslate);
+        if (!this.appProvider.isOnline()) {
+            message = "There was a problem connecting to the site. Please check your connection and try again."
+        }
         if (message === null) {
             // Message doesn't need to be displayed, stop.
             return Promise.resolve(null);
