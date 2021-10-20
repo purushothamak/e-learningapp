@@ -4,12 +4,12 @@
     </ion-navbar>
 </ion-header>
 <ion-content>
-    <ion-item text-wrap>
+    <!-- <ion-item text-wrap>
         <ion-label><h2>{{ 'core.settings.language' | translate }}</h2></ion-label>
         <ion-select [(ngModel)]="selectedLanguage" (ngModelChange)="languageChanged()" interface="action-sheet">
             <ion-option *ngFor="let entry of languages" [value]="entry.code">{{ entry.name }}</ion-option>
         </ion-select>
-    </ion-item>
+    </ion-item> -->
     <ion-item text-wrap class="core-settings-general-font-size">
         <ion-label><h2>{{ 'core.settings.fontsize' | translate }}</h2></ion-label>
         <ion-segment [(ngModel)]="selectedFontSize" (ngModelChange)="fontSizeChanged()" color="primary" item-content>
@@ -39,13 +39,13 @@
         </ion-label>
         <ion-toggle [(ngModel)]="richTextEditor" (ngModelChange)="richTextEditorChanged()"></ion-toggle>
     </ion-item>
-    <ion-item text-wrap>
+    <!-- <ion-item text-wrap>
         <ion-label>
             <h2>{{ 'core.settings.debugdisplay' | translate }}</h2>
             <p>{{ 'core.settings.debugdisplaydescription' | translate }}</p>
         </ion-label>
         <ion-toggle [(ngModel)]="debugDisplay" (ngModelChange)="debugDisplayChanged()"></ion-toggle>
-    </ion-item>
+    </ion-item> -->
     <ion-item text-wrap *ngIf="analyticsSupported">
         <ion-label>
             <h2>{{ 'core.settings.enablefirebaseanalytics' | translate }}</h2>

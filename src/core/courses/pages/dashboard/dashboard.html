@@ -22,9 +22,9 @@
         </ion-buttons>
     </ion-navbar>
 </ion-header>
-<ion-content>
+<ion-content> 
     <ion-card>
-        <div padding>
+        <div padding class="dashboard-header-view">
             <h1 padding class="core-dashboard-headerText"> Welcome {{userFullname}}!</h1>
             <h3 padding class="core-dashboard-headerText"> Your class is {{userClass}} </h3>
             <h3 padding class="core-dashboard-headerText"> Your school is {{userCompany}} </h3>
@@ -89,6 +89,13 @@
                             </ion-col>
                         </ion-row>
                     </ion-grid>
+                    <ion-card class="core-dashboard-card"> 
+                        <div padding>
+                            <h1 padding class="core-dashboard"></h1>
+                            <h3 padding class="core-dashboard"></h3>
+                            <h3 padding class="core-dashboard"></h3>
+                        </div>
+                    </ion-card>
                     <!-- <core-courses-my-courses></core-courses-my-courses>  -->
                 </ion-content>
             </ng-template>

@@ -41,7 +41,29 @@ ion-app.app-root page-core-courses-dashboard {
 
     .core-dashboard-headerText {
         text-align: center;
+        color: black;
     }
 
+    .dashboard-header-view {
+        border-radius: 5px;
+        background-image: url("#{$assets-path}/img/userinfo_bg.png");
+    }
+    
+    .dashboard-header-view:hover {
+        box-shadow: 0 8px 16px 0;
+    }
+      
+    .core-dashboard {
+       height: 80px;
+       background-color: transparent;
+    }
+
+    .core-dashboard-card {
+        background-color: transparent;
+        border:none !important;
+        box-shadow:none  !important;
+        border: none !important;
+        border-style: none !important;
+    }
 }
 
