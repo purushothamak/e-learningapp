@@ -11,6 +11,11 @@ ion-app.app-root page-core-mainmenu-more {
     $core-more-color-ios: $list-ios-text-color!default;
     $core-more-color-md: $list-md-text-color !default;
 
+    .dashboard-header-view {
+        border-radius: 5px;
+        background-image: url("#{$assets-path}/img/userinfo_bg.png");
+    }
+    
     .core-dashboard-headerText {
         text-align: center;
     }
