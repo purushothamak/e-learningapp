@@ -1,10 +1,10 @@
 {
-  "name": "moodlemobile",
+  "name": "e-Learning",
   "version": "3.9.4",
-  "description": "The official app for Moodle.",
+  "description": "An e-Learning App for Uganda",
   "author": {
-    "name": "Moodle Pty Ltd.",
-    "email": "mobile@moodle.com"
+    "name": "impiger Pty Ltd.",
+    "email": "impigertechuganda@gmail.com"
   },
   "config": {
     "ionic_webpack": "./config/webpack.config.js",
@@ -48,10 +48,10 @@
   },
   "dependencies": {
     "@angular/animations": "5.2.11",
-    "@angular/common": "5.2.11",
-    "@angular/compiler": "5.2.11",
-    "@angular/compiler-cli": "5.2.11",
-    "@angular/core": "5.2.11",
+    "@angular/common": "^5.2.11",
+    "@angular/compiler": "^5.2.11",
+    "@angular/compiler-cli": "^12.2.4",
+    "@angular/core": "^5.2.11",
     "@angular/forms": "5.2.11",
     "@angular/platform-browser": "5.2.11",
     "@angular/platform-browser-dynamic": "5.2.11",
@@ -84,11 +84,12 @@
     "@ionic-native/zip": "4.20.0",
     "@ngx-translate/core": "8.0.0",
     "@ngx-translate/http-loader": "2.0.1",
+    "@types/chartjs": "0.0.31",
     "ajv": "6.11.0",
-    "chart.js": "2.9.3",
+    "chart.js": "^2.9.4",
     "com-darryncampbell-cordova-plugin-intent": "1.3.0",
+    "compare-func": "^2.0.0",
     "cordova": "10.0.0",
-    "cordova-android": "8.1.0",
     "cordova-android-support-gradle-release": "3.0.1",
     "cordova-clipboard": "1.3.0",
     "cordova-ios": "5.1.1",
@@ -125,10 +126,12 @@
     "inquirer": "^7.3.2",
     "ionic-angular": "3.9.9",
     "ionicons": "3.0.0",
-    "jszip": "3.1.5",
+    "jszip": "^3.7.1",
     "mathjax": "2.7.7",
     "moment": "2.24.0",
+    "ng2-charts": "^2.2.3",
     "nl.kingsquare.cordova.background-audio": "1.0.1",
+    "node-sass": "^6.0.1",
     "phonegap-plugin-multidex": "1.0.0",
     "phonegap-plugin-push": "git+https://github.com/moodlemobile/phonegap-plugin-push.git#moodle-v3",
     "promise.prototype.finally": "3.1.0",
@@ -139,7 +142,7 @@
     "zone.js": "0.8.29"
   },
   "devDependencies": {
-    "@ionic/app-scripts": "3.2.3",
+    "@ionic/app-scripts": "^3.2.4",
     "@ionic/cli": "^6.11.7",
     "@types/cordova": "^0.0.34",
     "@types/cordova-plugin-file-transfer": "^0.0.3",
@@ -148,6 +151,7 @@
     "@types/node": "^8.10.59",
     "@types/promise.prototype.finally": "^2.0.4",
     "acorn": "^5.7.4",
+    "cordova-android": "^9.1.0",
     "cordova.plugins.diagnostic": "^5.0.2",
     "electron-builder-lib": "^20.23.1",
     "electron-rebuild": "^1.10.0",
@@ -162,6 +166,7 @@
     "minimist": "^1.2.5",
     "native-run": "^1.0.0",
     "node-loader": "^0.6.0",
+    "protobufjs": "^6.11.2",
     "request": "^2.88.2",
     "through": "^2.3.8",
     "typescript": "~2.6.2",
@@ -176,8 +181,8 @@
   },
   "cordova": {
     "platforms": [
-      "android",
-      "ios"
+      "ios",
+      "android"
     ],
     "plugins": {
       "com-darryncampbell-cordova-plugin-intent": {},

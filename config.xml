@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget android-versionCode="39400" id="com.moodle.moodlemobile" ios-CFBundleVersion="3.9.4.0" version="3.9.4" versionCode="39400" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>E-Learning</name>
-    <description>E-Learning Moodle official app</description>
-    <author email="mobile@moodle.com" href="http://moodle.com">Moodle Mobile team</author>
+<widget android-versionCode="39400" id="com.gyanmatrix.elpmobile" ios-CFBundleVersion="3.9.4.0" version="3.9.4" versionCode="39400" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>e-Learning</name>
+    <description>An e-Learning App for Uganda</description>
+    <author email="impigertechuganda@gmail.com" href="https://www.impigertech.com/">E-Learning Mobile team</author>
     <content src="index.html" />
     <access origin="*" />
     <access launch-external="yes" origin="tel:*" />
@@ -40,7 +40,7 @@
     <preference name="SplashShowOnlyFirstTime" value="false" />
     <preference name="SplashScreenSpinnerColor" value="#E48E00" />
     <preference name="android-minSdkVersion" value="19" />
-    <preference name="android-targetSdkVersion" value="29" />
+    <preference name="android-targetSdkVersion" value="30" />
     <preference name="AndroidPersistentFileLocation" value="Compatibility" />
     <preference name="CustomURLSchemePluginClearsAndroidIntent" value="true" />
     <preference name="iosPersistentFileLocation" value="Compatibility" />
