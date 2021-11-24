@@ -14,7 +14,7 @@
 
 // Based on the template node_modules/cordova-android/bin/templates/project/Activity.java
 
-package com.gyanmatrix.elpmobile;
+package com.moodle.moodlemobile;
 
 import android.os.Bundle;
 import android.view.KeyEvent;
