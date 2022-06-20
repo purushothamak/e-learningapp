@@ -7,16 +7,11 @@
         </ion-buttons>
     </ion-navbar>
 </ion-header>
-<ion-content>{{module.id}}--{{courseId}}
+<ion-content>
     <ion-refresher [enabled]="pageComponent.loaded" (ionRefresh)="pageComponent.doRefresh($event)">
         <ion-refresher-content pullingText="{{ 'core.pulltorefresh' | translate }}"></ion-refresher-content>
     </ion-refresher>
 
     <addon-mod-page-index [module]="module" [courseId]="courseId" (dataRetrieved)="updateData($event)"></addon-mod-page-index>
-        <!-- Create a calendar event. -->
-    <ion-fab core-fab bottom end >
-        <button ion-fab  style="background: #E48E00 !important;" (click)="openEdit()" [attr.aria-label]="'addon.calendar.newevent' | translate">
-            <ion-icon name="add"></ion-icon>
-        </button>
-    </ion-fab>
+     
 </ion-content>

@@ -117,10 +117,7 @@
             <ion-item text-wrap *ngIf="preventSubmitMessages.length">
                 <p class="item-heading">{{ 'addon.mod_quiz.cannotsubmitquizdueto' | translate }}</p>
                 <p *ngFor="let message of preventSubmitMessages">{{message}}</p>
-                <a ion-button block icon-end [href]="moduleUrl" core-link>
-                    {{ 'core.openinbrowser' | translate }}
-                    <ion-icon name="open"></ion-icon>
-                </a>
+                
             </ion-item>
             <!-- Button to submit the quiz. -->
             <ion-item *ngIf="!attempt.finishedOffline && !preventSubmitMessages.length">

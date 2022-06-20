@@ -1,9 +1,9 @@
 {
-    "app_id": "com.gyanmatrix.elpmobile",
-    "appname": "E-Learning",
+    "app_id": "com.e-learning.uganda",
+    "appname": "e-Learning",
     "desktopappname": "E-Learning",
-    "versioncode": 3945,
-    "versionname": "4.1.25",
+    "versioncode": 3946,
+    "versionname": "0.0.0.2",
     "cache_update_frequency_usually": 420000,
     "cache_update_frequency_often": 1200000,
     "cache_update_frequency_sometimes": 3600000,
@@ -104,7 +104,7 @@
     "forceLoginLogo": true,
     "ioswebviewscheme": "moodleappfs",
     "appstores": {
-        "android": "com.gyanmatrix.elpmobile",
+        "android": "com.elearning.uganda",
         "ios": "id633359593",
         "windows": "moodle-desktop\/9p9bwvhdc8c8",
         "mac": "id1255924440",
